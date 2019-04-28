@@ -1,9 +1,6 @@
 package ru.softwerke.practice.app2019.controller.rest;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import ru.softwerke.practice.app2019.util.JSONErrorMessage;
 import ru.softwerke.practice.app2019.util.QueryUtils;
 
@@ -27,18 +24,12 @@ public class JsonMappingExceptionMapper implements ExceptionMapper<JsonMappingEx
     
     @Override
     public Response toResponse(JsonMappingException exception) {
-//        exception.printStackTrace();
-        Throwable cause = exception.getCause();
-        if(cause instanceof WebApplicationException) {
+        try {
             return ((WebApplicationException) exception.getCause()).getResponse();
-        } else {
-            return QueryUtils.
-                    getResponseWithMessage(Response.Status.BAD_REQUEST,
-                            "invalid json",
-                            "invalid json");
+        } catch (ClassCastException e) {
+            JSONErrorMessage message = JSONErrorMessage.create(Response.Status.BAD_REQUEST,
+                    QueryUtils.INVALID_JSON_ERROR, exception.getOriginalMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
         }
-//        JSONErrorMessage message = JSONErrorMessage.create("unrecognized property",
-//                String.format("Unrecognized property '%s'", exception.getPropertyName()));
-//        return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
     }
 }

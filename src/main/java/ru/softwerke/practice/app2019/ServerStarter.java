@@ -47,7 +47,7 @@ public class ServerStarter {
         ctx.getMimeTypes().addMimeMapping("js", MimeTypes.Type.APPLICATION_JSON_UTF_8.asString());
         ctx.getMimeTypes().addMimeMapping("css", "text/css;charset=utf-8");
 
-        ServletHolder dynamicServletHolder = ctx.addServlet(ServletContainer.class, "/shop-api/*");
+        ServletHolder dynamicServletHolder = ctx.addServlet(ServletContainer.class, "/api/*");
         dynamicServletHolder.setInitParameter("javax.ws.rs.Application", ShopApplication.class.getCanonicalName());
 
         ServletHolder staticServletHolder = new ServletHolder("default", DefaultServlet.class);

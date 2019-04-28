@@ -10,45 +10,44 @@ import ru.softwerke.practice.app2019.util.StringParam;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Customer implements Entity {
     private static final String FIRST_NAME_FIELD = "firstName";
     private static final String LAST_NAME_FIELD = "lastName";
-    private static final String PATRONYMIC_FIELD = "patronymic";
-    private static final String BIRTH_DATE_FIELD = "birthDate";
+    private static final String MIDDLE_NAME = "middleName";
+    private static final String BIRTH_DATE_FIELD = "birthdate";
     
-    private static AtomicLong nextId = new AtomicLong();
+    private static AtomicInteger nextId = new AtomicInteger();
     
-    private final long id;
     private final String firstName;
     private final String lastName;
-    private final String patronymic;
+    private final String middleName;
     private final LocalDate birthDate;
+    private final int id;
     
     public static String getName() {
-        return "customer";
+        return "a customer";
     }
     
     @JsonCreator
-    public Customer(@NotNull @JsonProperty(value = FIRST_NAME_FIELD, required = true) String firstName,
-                    @NotNull @JsonProperty(value = LAST_NAME_FIELD, required = true) String lastName,
-                    @NotNull @JsonProperty(value = PATRONYMIC_FIELD, required = true) String patronymic,
-                    @NotNull @JsonProperty(value = BIRTH_DATE_FIELD, required = true) String birthDate) {
-        StringParam firstNameParam = new StringParam(firstName, FIRST_NAME_FIELD, Query.ADD_ENTITY + getName());
-        StringParam lastNameParam = new StringParam(lastName, LAST_NAME_FIELD, Query.ADD_ENTITY + getName());
-        StringParam patronymicParam = new StringParam(patronymic, PATRONYMIC_FIELD, Query.ADD_ENTITY + getName());
-        DateParam birthDateParam = new DateParam(birthDate, Query.ADD_ENTITY + getName());
+    public Customer(@NotNull @JsonProperty(value = FIRST_NAME_FIELD) String firstName,
+                    @NotNull @JsonProperty(value = LAST_NAME_FIELD) String lastName,
+                    @NotNull @JsonProperty(value = MIDDLE_NAME) String middleName,
+                    @NotNull @JsonProperty(value = BIRTH_DATE_FIELD) String birthDate) {
+        StringParam firstNameParam = new StringParam(firstName, FIRST_NAME_FIELD, Query.POST_ENTITY + getName());
+        StringParam lastNameParam = new StringParam(lastName, LAST_NAME_FIELD, Query.POST_ENTITY + getName());
+        StringParam middleNameParam = new StringParam(middleName, MIDDLE_NAME, Query.POST_ENTITY + getName());
+        DateParam birthDateParam = new DateParam(birthDate, BIRTH_DATE_FIELD, Query.POST_ENTITY + getName());
         this.firstName = firstNameParam.getValue();
         this.lastName = lastNameParam.getValue();
-        this.patronymic = patronymicParam.getValue();
+        this.middleName = middleNameParam.getValue();
         this.birthDate = birthDateParam.getDate();
-        
         this.id = nextId.getAndIncrement();
     }
     
     @Override
-    public long getId() {
+    public int getId() {
         return id;
     }
     
@@ -60,8 +59,8 @@ public class Customer implements Entity {
         return lastName;
     }
     
-    public String getPatronymic() {
-        return patronymic;
+    public String getMiddleName() {
+        return middleName;
     }
     
     @JsonIgnore
@@ -82,13 +81,13 @@ public class Customer implements Entity {
         return id == customer.id &&
                 Objects.equals(firstName, customer.firstName) &&
                 Objects.equals(lastName, customer.lastName) &&
-                Objects.equals(patronymic, customer.patronymic) &&
+                Objects.equals(middleName, customer.middleName) &&
                 Objects.equals(birthDate, customer.birthDate);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, patronymic, birthDate);
+        return Objects.hash(id, firstName, lastName, middleName, birthDate);
     }
     
     @Override
@@ -97,8 +96,8 @@ public class Customer implements Entity {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", patronymic='" + patronymic + '\'' +
-                ", birthDate=" + birthDate.toString() +
+                ", middleName='" + middleName + '\'' +
+                ", birthdate=" + birthDate.toString() +
                 '}';
     }
 }

@@ -3,15 +3,14 @@ package ru.softwerke.practice.app2019;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
+import ru.softwerke.practice.app2019.model.Bill;
 import ru.softwerke.practice.app2019.model.Customer;
 import ru.softwerke.practice.app2019.model.Device;
 import ru.softwerke.practice.app2019.service.EntityService;
 import ru.softwerke.practice.app2019.service.EntityServiceImpl;
 import ru.softwerke.practice.app2019.storage.EntityStorage;
-import ru.softwerke.practice.app2019.storage.Storage;
 
 import javax.ws.rs.ApplicationPath;
-import java.time.LocalDate;
 import java.util.LinkedHashMap;
 
 @ApplicationPath("/")
@@ -26,6 +25,7 @@ public class ShopApplication extends ResourceConfig {
                 });
                 bind(new EntityServiceImpl<>(new EntityStorage<Customer>())).to(new TypeLiteral<EntityService<Customer>>() {
                 });
+                bind(new EntityServiceImpl<>(new EntityStorage<Bill>())).to(new TypeLiteral<EntityService<Bill>>(){});
             }
         });
         setProperties(new LinkedHashMap<String, Object>() {{

@@ -5,15 +5,15 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
-public class LongParam {
-    private static final String FORMAT = "the long number format";
-    private final long longValue;
+public class IntegerParam {
+    private static final String FORMAT = "the integer number format";
+    private final int intValue;
     private final String typeField;
     private final String typeQuery;
     
-    public LongParam(String longValueStr, String typeField, String typeQuery) throws WebApplicationException {
-        QueryUtils.checkLengthOfHeaderFields(longValueStr, typeField, typeQuery);
-        if (StringUtils.isBlank(longValueStr)) {
+    public IntegerParam(String intValueStr, String typeField, String typeQuery) throws WebApplicationException {
+        QueryUtils.checkLengthOfHeaderFields(intValueStr, typeField, typeQuery);
+        if (StringUtils.isBlank(intValueStr)) {
             Response response = QueryUtils.
                     getResponseWithMessage(Response.Status.BAD_REQUEST,
                             QueryUtils.EMPTY_VALUE_TYPE_ERROR,
@@ -21,30 +21,30 @@ public class LongParam {
             throw new WebApplicationException(response);
         }
         try {
-            long temp = Long.valueOf(longValueStr);
+            int temp = Integer.valueOf(intValueStr);
             if (temp >= 0) {
-                this.longValue = temp;
+                this.intValue = temp;
                 this.typeField = typeField;
                 this.typeQuery = typeQuery;
             } else {
                 Response response = QueryUtils.
                         getResponseWithMessage(Response.Status.BAD_REQUEST,
                                 QueryUtils.INVALID_FORMAT_TYPE_ERROR,
-                                QueryUtils.getNegativeNumberErrorMessage(longValueStr, typeField, typeQuery));
+                                QueryUtils.getNegativeNumberErrorMessage(intValueStr, typeField, typeQuery));
                 throw new WebApplicationException(response);
             }
         } catch (NumberFormatException e) {
             Response response = QueryUtils.
                     getResponseWithMessage(Response.Status.BAD_REQUEST,
                             QueryUtils.INVALID_FORMAT_TYPE_ERROR,
-                            QueryUtils.getInvalidFormatMessage(longValueStr, typeField, typeQuery, FORMAT));
+                            QueryUtils.getInvalidFormatMessage(intValueStr, typeField, typeQuery, FORMAT));
             throw new WebApplicationException(response);
         }
         
     }
     
-    public long getLongValue() {
-        return longValue;
+    public int getIntegerValue() {
+        return intValue;
     }
     
     public String getTypeField() {

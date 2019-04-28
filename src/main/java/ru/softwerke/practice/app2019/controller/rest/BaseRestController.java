@@ -4,12 +4,11 @@ import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import ru.softwerke.practice.app2019.model.Entity;
 import ru.softwerke.practice.app2019.query.Query;
 import ru.softwerke.practice.app2019.query.QueryConditionsHolder;
-import ru.softwerke.practice.app2019.util.LongParam;
+import ru.softwerke.practice.app2019.util.IntegerParam;
 import ru.softwerke.practice.app2019.util.QueryUtils;
 import ru.softwerke.practice.app2019.service.EntityService;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -24,14 +23,14 @@ public class BaseRestController<T extends Entity> implements RestController<T> {
     Comparator<T> entityComparator;
     
     public T getEntityById(String idByString, String entity) throws WebApplicationException {
-        LongParam idParam = new LongParam(idByString, Query.ID, Query.GET_BY_ID);
-        long id = idParam.getLongValue();
+        IntegerParam idParam = new IntegerParam(idByString, Query.ID, Query.GET_BY_ID);
+        int id = idParam.getIntegerValue();
         T result = service.getEntity(id);
         if (result == null) {
             Response response = QueryUtils.
                     getResponseWithMessage(Response.Status.NOT_FOUND,
-                            "entity doesn't exist",
-                            String.format("%s with id %d doesn't exist", entity, id));
+                            QueryUtils.NOT_FOUND_TYPE_ERROR,
+                            String.format("%s with id %d not found", entity, id));
             throw new WebApplicationException(response);
         }
         return result;
@@ -39,22 +38,14 @@ public class BaseRestController<T extends Entity> implements RestController<T> {
     
     public List<T> getEntities(Query<T> query) throws WebApplicationException {
         QueryConditionsHolder<T> allConditions = query.getConditionsHolder();
-        List<T> result = service.getRequestedListOfEntities(allConditions);
-        if (result.isEmpty()) {
-            Response response = QueryUtils.
-                    getResponseWithMessage(Response.Status.NOT_FOUND,
-                            "not found",
-                            "nothing found for this request");
-            throw new WebApplicationException(response);
-        }
-        return result;
+        return service.getRequestedListOfEntities(allConditions);
     }
     
     public T addNewEntity(T newEntity) throws WebApplicationException {
         if (newEntity == null) {
             Response response = QueryUtils.
                     getResponseWithMessage(Response.Status.BAD_REQUEST,
-                            "empty request",
+                            QueryUtils.EMPTY_REQUEST_TYPE_ERROR,
                             "request body is empty");
             throw new WebApplicationException(response);
         }
@@ -67,15 +58,15 @@ public class BaseRestController<T extends Entity> implements RestController<T> {
         for (String key : queryParams.keySet()) {
             switch (key) {
                 case Query.COUNT: {
-                    queryBuilder.setCount(new LongParam(queryParams.getFirst(key), Query.COUNT, Query.FILTER));
+                    queryBuilder.setCount(new IntegerParam(queryParams.getFirst(key), Query.COUNT, Query.FILTER));
                     break;
                 }
                 case Query.PAGE: {
-                    queryBuilder.setPage(new LongParam(queryParams.getFirst(key), Query.PAGE, Query.FILTER));
+                    queryBuilder.setPage(new IntegerParam(queryParams.getFirst(key), Query.PAGE, Query.FILTER));
                     break;
                 }
                 case Query.OFFSET: {
-                    queryBuilder.setOffset(new LongParam(queryParams.getFirst(key), Query.OFFSET, Query.FILTER));
+                    queryBuilder.setOffset(new IntegerParam(queryParams.getFirst(key), Query.OFFSET, Query.FILTER));
                     break;
                 }
             }
@@ -87,5 +78,31 @@ public class BaseRestController<T extends Entity> implements RestController<T> {
         queryParams.remove(Query.PAGE);
         queryParams.remove(Query.OFFSET);
         return queryParams;
+    }
+    
+    void addOrderType(List<String> allOrderTypes, Map<String, Comparator<T>> orderParamsMap, String name) throws WebApplicationException {
+        for (String type : allOrderTypes) {
+            if (orderParamsMap.containsKey(type)) {
+                if (entityComparator == null) {
+                    entityComparator = orderParamsMap.get(type);
+                } else {
+                    entityComparator = entityComparator.thenComparing(orderParamsMap.get(type));
+                }
+            } else {
+                Response response = QueryUtils.
+                        getResponseWithMessage(Response.Status.BAD_REQUEST,
+                                QueryUtils.MALFORMED_PARAMS_TYPE_ERROR,
+                                QueryUtils.getMalformedValueParamsMessage(type, name));
+                throw new WebApplicationException(response);
+            }
+        }
+    }
+    
+    void sendWrongParamsMessage(String key, String name) throws WebApplicationException {
+        Response response = QueryUtils.
+                getResponseWithMessage(Response.Status.BAD_REQUEST,
+                        QueryUtils.MALFORMED_PARAMS_TYPE_ERROR,
+                        QueryUtils.getMalformedKeyParamsMessage(name, key));
+        throw new WebApplicationException(response);
     }
 }

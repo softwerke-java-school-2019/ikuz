@@ -31,85 +31,92 @@ public class DeviceRestController extends BaseRestController<Device> {
             switch (key) {
                 case DeviceQuery.MODEL: {
                     deviceQueryBuilder.setModel(new StringParam(queryParams.getFirst(key), DeviceQuery.MODEL,
-                            Query.FILTER + " " + Device.getName()));
+                            Query.FILTER + Device.getName()));
+                    break;
+                }
+                case DeviceQuery.MODEL_PREFIX: {
+                    deviceQueryBuilder.setModelPrefix(new StringParam(queryParams.getFirst(key), DeviceQuery.MODEL_PREFIX,
+                            Query.FILTER + Device.getName()));
                     break;
                 }
                 case DeviceQuery.TYPE: {
                     deviceQueryBuilder.setType(new StringParam(queryParams.getFirst(key), DeviceQuery.TYPE,
-                            Query.FILTER + " " + Device.getName()));
+                            Query.FILTER + Device.getName()));
                     break;
                 }
-                case DeviceQuery.PRODUCER: {
-                    deviceQueryBuilder.setProducer(new StringParam(queryParams.getFirst(key), DeviceQuery.PRODUCER,
-                            Query.FILTER + " " + Device.getName()));
+                case DeviceQuery.TYPE_PREFIX: {
+                    deviceQueryBuilder.setTypePrefix(new StringParam(queryParams.getFirst(key), DeviceQuery.TYPE_PREFIX,
+                            Query.FILTER + Device.getName()));
+                    break;
+                }
+                case DeviceQuery.MANUFACTURER: {
+                    deviceQueryBuilder.setProducer(new StringParam(queryParams.getFirst(key), DeviceQuery.MANUFACTURER,
+                            Query.FILTER + Device.getName()));
+                    break;
+                }
+                case DeviceQuery.MANUFACTURER_PREFIX: {
+                    deviceQueryBuilder.setManufacturerPrefix(new StringParam(queryParams.getFirst(key), DeviceQuery.MANUFACTURER_PREFIX,
+                            Query.FILTER + Device.getName()));
                     break;
                 }
                 case DeviceQuery.COLOR: {
-                    deviceQueryBuilder.setColor(new ColorParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Device.getName()));
+                    deviceQueryBuilder.setColorName(new StringParam(queryParams.getFirst(key),
+                            DeviceQuery.COLOR,
+                            Query.FILTER + Device.getName()));
                     break;
                 }
-                case DeviceQuery.DATE: {
+                case DeviceQuery.COLOR_RGB: {
+                    deviceQueryBuilder.setColorRGB(new IntegerParam(queryParams.getFirst(key),
+                            DeviceQuery.COLOR_RGB,
+                            Query.FILTER + Device.getName()));
+                    break;
+                }
+                case DeviceQuery.MANUFACTURE_DATE: {
                     deviceQueryBuilder.setDate(new DateParam(queryParams.getFirst(key),
+                            DeviceQuery.MANUFACTURE_DATE,
                             Query.FILTER + " " + Device.getName()));
                     break;
                 }
-                case DeviceQuery.DATE_FROM: {
+                case DeviceQuery.MANUFACTURE_DATE_FROM: {
                     deviceQueryBuilder.setDateFrom(new DateParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Device.getName()));
+                            DeviceQuery.MANUFACTURE_DATE,
+                            Query.FILTER + Device.getName()));
                     break;
                 }
-                case DeviceQuery.DATE_TO: {
+                case DeviceQuery.MANUFACTURE_DATE_TO: {
                     deviceQueryBuilder.setDateTo(new DateParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Device.getName()));
+                            DeviceQuery.MANUFACTURE_DATE,
+                            Query.FILTER + Device.getName()));
                     break;
                 }
                 case DeviceQuery.PRICE: {
-                    deviceQueryBuilder.setPrice(new PriceParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Device.getName()));
+                    deviceQueryBuilder.setPrice(new IntegerParam(queryParams.getFirst(key),
+                            DeviceQuery.PRICE,
+                            Query.FILTER + Device.getName()));
                     break;
                 }
                 case DeviceQuery.PRICE_FROM: {
-                    deviceQueryBuilder.setPriceFrom(new PriceParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Device.getName()));
+                    deviceQueryBuilder.setPriceFrom(new IntegerParam(queryParams.getFirst(key),
+                            DeviceQuery.PRICE,
+                            Query.FILTER + Device.getName()));
                     break;
                 }
                 case DeviceQuery.PRICE_TO: {
-                    deviceQueryBuilder.setPriceTo(new PriceParam(queryParams.getFirst(key),
+                    deviceQueryBuilder.setPriceTo(new IntegerParam(queryParams.getFirst(key),
+                            DeviceQuery.PRICE,
                             Query.FILTER + " " + Device.getName()));
                     break;
                 }
                 case Query.ORDER_TYPE: {
-                    List<String> allOrderTypes = queryParams.get(key);
-                    for (String type : allOrderTypes) {
-                        if (DeviceQuery.getOrderParamsMap().containsKey(type)) {
-                            if (entityComparator == null) {
-                                entityComparator = DeviceQuery.getOrderParamsMap().get(type);
-                            } else {
-                                entityComparator = entityComparator.thenComparing(DeviceQuery.getOrderParamsMap().get(type));
-                            }
-                        } else {
-                            Response response = QueryUtils.
-                                    getResponseWithMessage(Response.Status.BAD_REQUEST,
-                                            "malformed query parameters",
-                                            String.format("the value \"%s\" of query parameter %s is malformed",
-                                                    type,
-                                                    DeviceQuery.ORDER_TYPE));
-                            throw new WebApplicationException(response);
-                        }
-                    }
+                    addOrderType(queryParams.get(key), DeviceQuery.getOrderParamsMap(), Device.getName());
                     break;
                 }
                 default: {
-                    Response response = QueryUtils.
-                            getResponseWithMessage(Response.Status.BAD_REQUEST,
-                                    "malformed query parameters",
-                                    String.format("the query parameter \"%s\" is malformed", key));
-                    throw new WebApplicationException(response);
+                    sendWrongParamsMessage(key, Device.getName());
                 }
             }
         }
-        deviceQueryBuilder.setDeviceComparator(entityComparator);
+        deviceQueryBuilder.setComparator(entityComparator);
         return getEntities(deviceQueryBuilder.build());
     }
     

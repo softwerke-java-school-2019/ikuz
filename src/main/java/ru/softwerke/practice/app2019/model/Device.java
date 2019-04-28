@@ -3,100 +3,106 @@ package ru.softwerke.practice.app2019.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javafx.scene.paint.Color;
 import ru.softwerke.practice.app2019.query.Query;
 import ru.softwerke.practice.app2019.util.*;
 
+import javax.annotation.Priority;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.WebApplicationException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Device implements Entity {
-    private static final String MODEL_FIELD = "model";
-    private static final String TYPE_FIELD = "type";
-    private static final String COLOR_FIELD = "color";
-    private static final String DATE_FIELD = "date";
+    private static final String MODEL_FIELD = "modelName";
+    private static final String TYPE_FIELD = "deviceType";
+    private static final String COLOR_NAME_FIELD = "colorName";
+    private static final String COLOR_RGB_FIELD = "colorRGB";
+    private static final String MANUFACTURE_DATE_FIELD = "manufactureDate";
     private static final String PRICE_FIELD = "price";
-    private static final String PRODUCER_FIELD = "producer";
+    private static final String MANUFACTURER_FIELD = "manufacturer";
     
-    private static AtomicLong nextId = new AtomicLong();
+    private static AtomicInteger nextId = new AtomicInteger();
     
-    private final long id;
-    private final String model;
-    private final String type;
-    private final Color color;
-    private final BigDecimal price;
-    private final String producer;
-    private final LocalDate date;
+    private final String modelName;
+    private final String deviceType;
+    private final String colorName;
+    private final int price;
+    private final String manufacturer;
+    private final LocalDate manufacturerDate;
+    private final int colorRGB;
+    private final int id;
     
     public static String getName() {
-        return "device";
+        return "a device";
     }
     
     @JsonCreator
     public Device(
-            @NotNull @JsonProperty(value = MODEL_FIELD) String model,
-            @NotNull @JsonProperty(value = TYPE_FIELD) String type,
-            @NotNull @JsonProperty(value = PRODUCER_FIELD) String producer,
-            @NotNull @JsonProperty(value = COLOR_FIELD) String color,
-            @NotNull @JsonProperty(value = DATE_FIELD) String date,
+            @NotNull @JsonProperty(value = MODEL_FIELD) String modelName,
+            @NotNull @JsonProperty(value = TYPE_FIELD) String deviceType,
+            @NotNull @JsonProperty(value = MANUFACTURER_FIELD) String manufacturer,
+            @NotNull @JsonProperty(value = COLOR_NAME_FIELD) String colorName,
+            @NotNull @JsonProperty(value = MANUFACTURE_DATE_FIELD) String manufacturerDate,
             @NotNull @JsonProperty(value = PRICE_FIELD) String price) throws WebApplicationException {
-        StringParam modelParam = new StringParam(model, MODEL_FIELD, Query.ADD_ENTITY + " " + getName());
-        StringParam typeParam = new StringParam(type, TYPE_FIELD, Query.ADD_ENTITY + " " + getName());
-        StringParam producerParam = new StringParam(producer, PRODUCER_FIELD, Query.ADD_ENTITY + " " + getName());
-        ColorParam colorParam = new ColorParam(color, Query.ADD_ENTITY + " " + getName());
-        DateParam dateParam = new DateParam(date, Query.ADD_ENTITY + " " + getName());
-        PriceParam priceParam = new PriceParam(price, Query.ADD_ENTITY + " " + getName());
-        this.model = modelParam.getValue();
-        this.type = typeParam.getValue();
-        this.producer = producerParam.getValue();
-        this.color = colorParam.getColor();
-        this.date = dateParam.getDate();
-        this.price = priceParam.getPrice();
+        StringParam modelParam = new StringParam(modelName, MODEL_FIELD, Query.POST_ENTITY + getName());
+        StringParam typeParam = new StringParam(deviceType, TYPE_FIELD, Query.POST_ENTITY + getName());
+        StringParam producerParam = new StringParam(manufacturer, MANUFACTURER_FIELD, Query.POST_ENTITY + getName());
+        StringParam colorNameParam = new StringParam(colorName, COLOR_NAME_FIELD, Query.POST_ENTITY + getName());
+        
+        DateParam dateParam = new DateParam(manufacturerDate, MANUFACTURE_DATE_FIELD, Query.POST_ENTITY + getName());
+        IntegerParam priceParam = new IntegerParam(price, PRICE_FIELD, Query.POST_ENTITY + getName());
+        
+        String colorNameTemp = colorNameParam.getValue();
+        int colorRGBTemp = QueryUtils.checkDoesColorExist(colorNameTemp, Query.POST_ENTITY + getName());
+        
+        this.modelName = modelParam.getValue();
+        this.deviceType = typeParam.getValue();
+        this.manufacturer = producerParam.getValue();
+        this.colorRGB = colorRGBTemp;
+        this.colorName = colorNameTemp;
+        this.manufacturerDate = dateParam.getDate();
+        this.price = priceParam.getIntegerValue();
         this.id = nextId.getAndIncrement();
     }
     
-    public String getModel() {
-        return model;
+    public String getModelName() {
+        return modelName;
     }
     
-    public String getType() {
-        return type;
+    public String getDeviceType() {
+        return deviceType;
+    }
+    
+    @JsonProperty(value = COLOR_NAME_FIELD)
+    public String getColorName() {
+        return colorName;
+    }
+    
+    public int getColorRGB() {
+        return colorRGB;
     }
     
     @JsonIgnore
-    public Color getColor() {
-        return color;
+    public LocalDate getManufacturerDate() {
+        return manufacturerDate;
     }
     
-    @JsonProperty(value = COLOR_FIELD)
-    public String getColorString() {
-        return color.toString();
-    }
-    
-    @JsonIgnore
-    public LocalDate getDate() {
-        return date;
-    }
-    
-    @JsonProperty(value = DATE_FIELD)
+    @JsonProperty(value = MANUFACTURE_DATE_FIELD)
     public String getDateString() {
-        return date.format(DateParam.formatter);
+        return manufacturerDate.format(DateParam.formatter);
     }
     
-    public BigDecimal getPrice() {
+    public int getPrice() {
         return price;
     }
     
-    public String getProducer() {
-        return producer;
+    public String getManufacturer() {
+        return manufacturer;
     }
     
     @Override
-    public long getId() {
+    public int getId() {
         return id;
     }
     
@@ -106,29 +112,29 @@ public class Device implements Entity {
         if (o == null || getClass() != o.getClass()) return false;
         Device that = (Device) o;
         return id == that.id &&
-                Objects.equals(model, that.model) &&
-                Objects.equals(type, that.type) &&
-                Objects.equals(color, that.color) &&
-                Objects.equals(date, that.date) &&
+                Objects.equals(modelName, that.modelName) &&
+                Objects.equals(deviceType, that.deviceType) &&
+                Objects.equals(colorName, that.colorName) &&
+                Objects.equals(manufacturerDate, that.manufacturerDate) &&
                 Objects.equals(price, that.price) &&
-                Objects.equals(producer, that.producer);
+                Objects.equals(manufacturer, that.manufacturer);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, model, type, color, price, producer);
+        return Objects.hash(id, modelName, deviceType, colorName, price, manufacturer);
     }
     
     @Override
     public String toString() {
         return "Device{" +
                 "id=" + id +
-                ", model='" + model + '\'' +
-                ", type=" + type +
-                ", color=" + color +
-                ", date=" + date.toString() +
-                ", price=" + price.toString() +
-                ", producer='" + producer + '\'' +
+                ", modelName='" + modelName + '\'' +
+                ", deviceType=" + deviceType +
+                ", colorName=" + colorName +
+                ", manufactureDate=" + manufacturerDate.toString() +
+                ", price=" + price +
+                ", manufacturer='" + manufacturer + '\'' +
                 '}';
     }
 }

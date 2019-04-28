@@ -19,9 +19,8 @@ public class StringParam {
         } else {
             Response response = QueryUtils.
                     getResponseWithMessage(Response.Status.BAD_REQUEST,
-                            "empty value of query parameters",
-                            String.format("the value of %s parameter in %s query is null or empty",
-                                    typeField, typeQuery));
+                            QueryUtils.EMPTY_VALUE_TYPE_ERROR,
+                            QueryUtils.getEmptyOrNullParamsMessage(typeField, typeQuery));
             throw new WebApplicationException(response);
         }
     }

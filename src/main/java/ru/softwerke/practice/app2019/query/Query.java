@@ -1,21 +1,22 @@
 package ru.softwerke.practice.app2019.query;
 
+import ru.softwerke.practice.app2019.model.Device;
 import ru.softwerke.practice.app2019.model.Entity;
-import ru.softwerke.practice.app2019.util.LongParam;
+import ru.softwerke.practice.app2019.util.IntegerParam;
 import ru.softwerke.practice.app2019.util.QueryUtils;
 
 import java.util.Comparator;
 
 public class Query<T extends Entity> {
-    public static final String COUNT = "count";
+    public static final String COUNT = "pageItems";
     public static final String OFFSET = "offset";
     public static final String PAGE = "page";
     public static final String ORDER_TYPE = "orderBy";
     public static final String ID = "ID";
-    public static final String ADD_ENTITY = "add";
+    public static final String POST_ENTITY = "post ";
     public static final String GET_BY_ID = "get by ID";
-    public static final String FILTER = "filter";
-    public static final String ORDER = "order";
+    public static final String FILTER = "filter ";
+    
     QueryConditionsHolder<T> holder;
     
     Query() {
@@ -27,32 +28,36 @@ public class Query<T extends Entity> {
     }
     
     public static class Builder<T extends Entity> {
-        private Query<T> queryToBuild;
+        Query<T> queryToBuild;
         
-        
-        public Builder() {
+        Builder() {
             queryToBuild = new Query<>();
         }
         
-        public Query.Builder setCount(LongParam count) {
-            long parsedCountValue = count.getLongValue();
-            parsedCountValue = QueryUtils.checkCountValue(parsedCountValue);
+        public Builder setCount(IntegerParam count) {
+            int parsedCountValue = count.getIntegerValue();
+            QueryUtils.checkCountValue(parsedCountValue);
             this.queryToBuild.holder.setCountOfElementsParam(parsedCountValue);
             return this;
         }
         
-        public Query.Builder setPage(LongParam page) {
-            this.queryToBuild.holder.setPageParam(page.getLongValue());
+        public Builder setPage(IntegerParam page) {
+            this.queryToBuild.holder.setPageParam(page.getIntegerValue());
             return this;
         }
         
-        public Query.Builder setOffset(LongParam offset) {
-            this.queryToBuild.holder.setOffsetParam(offset.getLongValue());
+        public Builder setOffset(IntegerParam offset) {
+            this.queryToBuild.holder.setOffsetParam(offset.getIntegerValue());
             return this;
         }
         
-        public Query.Builder changeDisplayToOffsetOption() {
+        public Builder changeDisplayToOffsetOption() {
             this.queryToBuild.holder.setDisplayToOffsetParam();
+            return this;
+        }
+        
+        public Query.Builder setComparator(Comparator<T> comparator) {
+            this.queryToBuild.holder.setQueryComparator(comparator);
             return this;
         }
         

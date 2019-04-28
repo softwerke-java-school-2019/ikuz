@@ -3,7 +3,6 @@ package ru.softwerke.practice.app2019.controller.rest;
 
 import ru.softwerke.practice.app2019.model.Customer;
 import ru.softwerke.practice.app2019.query.CustomerQuery;
-import ru.softwerke.practice.app2019.query.DeviceQuery;
 import ru.softwerke.practice.app2019.query.Query;
 import ru.softwerke.practice.app2019.service.EntityService;
 import ru.softwerke.practice.app2019.util.*;
@@ -33,65 +32,59 @@ public class CustomerRestController extends BaseRestController<Customer> {
             switch (key) {
                 case CustomerQuery.FIRST_NAME: {
                     customerQueryBuilder.setFirstName(new StringParam(queryParams.getFirst(key), CustomerQuery.FIRST_NAME,
-                            Query.FILTER + " " + Customer.getName()));
+                            Query.FILTER + Customer.getName()));
                     break;
                 }
                 case CustomerQuery.LAST_NAME: {
                     customerQueryBuilder.setLastName(new StringParam(queryParams.getFirst(key), CustomerQuery.LAST_NAME,
-                            Query.FILTER + " " + Customer.getName()));
+                            Query.FILTER + Customer.getName()));
                     break;
                 }
-                case CustomerQuery.PATRONYMIC: {
-                    customerQueryBuilder.setPatronymic(new StringParam(queryParams.getFirst(key), CustomerQuery.PATRONYMIC,
-                            Query.FILTER + " " + Customer.getName()));
+                case CustomerQuery.MIDDLE_NAME: {
+                    customerQueryBuilder.setMiddleName(new StringParam(queryParams.getFirst(key), CustomerQuery.MIDDLE_NAME,
+                            Query.FILTER + Customer.getName()));
                     break;
+                }
+                case CustomerQuery.FIRST_NAME_PREFIX: {
+                    customerQueryBuilder.setFirstNamePrefix(new StringParam(queryParams.getFirst(key), CustomerQuery.FIRST_NAME_PREFIX,
+                            Query.FILTER + Customer.getName()));
+                }
+                case CustomerQuery.MIDDLE_NAME_PREFIX: {
+                    customerQueryBuilder.setMiddleNamePrefix(new StringParam(queryParams.getFirst(key), CustomerQuery.MIDDLE_NAME_PREFIX,
+                            Query.FILTER + Customer.getName()));
+                }
+                case CustomerQuery.LAST_NAME_PREFIX: {
+                    customerQueryBuilder.setLastNamePrefix(new StringParam(queryParams.getFirst(key), CustomerQuery.LAST_NAME_PREFIX,
+                            Query.FILTER + Customer.getName()));
                 }
                 case CustomerQuery.BIRTH_DATE: {
                     customerQueryBuilder.setBirthDate(new DateParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Customer.getName()));
+                            CustomerQuery.BIRTH_DATE,
+                            Query.FILTER + Customer.getName()));
                     break;
                 }
                 case CustomerQuery.BIRTH_DATE_FROM: {
                     customerQueryBuilder.setBirthDateFrom(new DateParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Customer.getName()));
+                            CustomerQuery.BIRTH_DATE,
+                            Query.FILTER + Customer.getName()));
                     break;
                 }
                 case CustomerQuery.BIRTH_DATE_TO: {
                     customerQueryBuilder.setBirthDateTo(new DateParam(queryParams.getFirst(key),
-                            Query.FILTER + " " + Customer.getName()));
+                            CustomerQuery.BIRTH_DATE,
+                            Query.FILTER + Customer.getName()));
                     break;
                 }
                 case Query.ORDER_TYPE: {
-                    List<String> allOrderTypes = queryParams.get(key);
-                    for (String type : allOrderTypes) {
-                        if (CustomerQuery.getOrderParamsMap().containsKey(type)) {
-                            if (entityComparator == null) {
-                                entityComparator = CustomerQuery.getOrderParamsMap().get(type);
-                            } else {
-                                entityComparator = entityComparator.thenComparing(CustomerQuery.getOrderParamsMap().get(type));
-                            }
-                        } else {
-                            Response response = QueryUtils.
-                                    getResponseWithMessage(Response.Status.BAD_REQUEST,
-                                            "malformed query parameters",
-                                            String.format("the value \"%s\" of query parameter %s is malformed",
-                                                    type,
-                                                    DeviceQuery.ORDER_TYPE));
-                            throw new WebApplicationException(response);
-                        }
-                    }
+                    addOrderType(queryParams.get(key), CustomerQuery.getOrderParamsMap(), Customer.getName());
                     break;
                 }
                 default: {
-                    Response response = QueryUtils.
-                            getResponseWithMessage(Response.Status.BAD_REQUEST,
-                                    "malformed query parameters",
-                                    String.format("the query parameter \"%s\" is malformed", key));
-                    throw new WebApplicationException(response);
+                    sendWrongParamsMessage(key, Customer.getName());
                 }
             }
         }
-        customerQueryBuilder.setCustomerComparator(entityComparator);
+        customerQueryBuilder.setComparator(entityComparator);
         return getEntities(customerQueryBuilder.build());
     }
     

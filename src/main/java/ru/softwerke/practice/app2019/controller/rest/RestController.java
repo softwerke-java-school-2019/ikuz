@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface RestController<T extends Entity> {
     T getEntityById(String idByString, String entity) throws WebApplicationException;
+    
     List<T> getEntities(Query<T> query) throws WebApplicationException;
+    
     T addNewEntity(T newEntity) throws WebApplicationException;
 }

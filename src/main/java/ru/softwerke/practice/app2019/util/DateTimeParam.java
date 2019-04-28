@@ -4,19 +4,19 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
-public class DateParam {
-    private static final String PATTERN = "dd.MM.yyyy";
-    private static final String FORMAT = "the date format: " + PATTERN;
-    private final LocalDate date;
+public class DateTimeParam {
+    private static final String PATTERN = "dd.MM.yyyy HH:mm:ss";
+    private static final String FORMAT = "the dateTime format: " + PATTERN;
+    private final LocalDateTime dateTime;
     private final String typeQuery;
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN).withLocale(Locale.getDefault());
     
-    public DateParam(String dateStr, String typeField, String typeQuery) throws WebApplicationException {
+    public DateTimeParam(String dateStr, String typeField, String typeQuery) throws WebApplicationException {
         QueryUtils.checkLengthOfHeaderFields(dateStr, typeField, typeQuery);
         if (StringUtils.isBlank(dateStr)) {
             Response response = QueryUtils.
@@ -27,7 +27,7 @@ public class DateParam {
         }
         
         try {
-            this.date = LocalDate.parse(dateStr, formatter);
+            this.dateTime = LocalDateTime.parse(dateStr, formatter);
             this.typeQuery = typeQuery;
         } catch (DateTimeParseException e) {
             Response response = QueryUtils.
@@ -38,8 +38,8 @@ public class DateParam {
         }
     }
     
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
     
     public String getTypeQuery() {

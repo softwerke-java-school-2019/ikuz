@@ -8,15 +8,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class QueryConditionsHolder<T extends Entity> {
-    private static final long DEFAULT_COUNT = 10;
-    private static final long DEFAULT_PAGE = 1;
-    private static final long DEFAULT_OFFSET = 0;
+    private static final int DEFAULT_COUNT = 10;
+    private static final int DEFAULT_PAGE = 1;
+    private static final int DEFAULT_OFFSET = 0;
     
     private final List<QueryCondition<T, ?>> queryConditionList;
     private Comparator<T> queryComparator;
-    private long count;
-    private long page;
-    private long offset;
+    private int count;
+    private int page;
+    private int offset;
     private boolean isPaginatedOutput;
     
     QueryConditionsHolder() {
@@ -31,15 +31,15 @@ public class QueryConditionsHolder<T extends Entity> {
         this.queryConditionList.add(queryCondition);
     }
     
-    void setCountOfElementsParam(long count) {
+    void setCountOfElementsParam(int count) {
         this.count = count;
     }
     
-    void setPageParam(long page) {
+    void setPageParam(int page) {
         this.page = page;
     }
     
-    void setOffsetParam(long offset) {
+    void setOffsetParam(int offset) {
         this.offset = offset;
     }
     
@@ -51,15 +51,15 @@ public class QueryConditionsHolder<T extends Entity> {
         this.queryComparator = queryComparator;
     }
     
-    public long getCount() {
+    public int getCount() {
         return count;
     }
     
-    public long getPage() {
+    public int getPage() {
         return page;
     }
     
-    public long getOffset() {
+    public int getOffset() {
         return offset;
     }
     

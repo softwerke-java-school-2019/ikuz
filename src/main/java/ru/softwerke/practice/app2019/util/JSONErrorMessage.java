@@ -34,20 +34,21 @@ public class JSONErrorMessage {
         private final String type;
         private final String message;
         private final Response.Status status;
-    
+        
         private ErrorDescription(Response.Status status, String type, String msg) {
             this.type = type;
             this.message = msg;
             this.status = status;
         }
-    
+        
         public String getType() {
             return type;
         }
-    
+        
         public String getMessage() {
             return message;
         }
+        
         @JsonIgnore
         public Response.Status getStatus() {
             return status;

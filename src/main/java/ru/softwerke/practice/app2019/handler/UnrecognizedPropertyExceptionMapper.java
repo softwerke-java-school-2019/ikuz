@@ -1,7 +1,7 @@
-package ru.softwerke.practice.app2019.controller.rest;
+package ru.softwerke.practice.app2019.handler;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import ru.softwerke.practice.app2019.util.JSONErrorMessage;
+import ru.softwerke.practice.app2019.handler.JSONErrorMessage;
 import ru.softwerke.practice.app2019.util.QueryUtils;
 
 import javax.annotation.Priority;

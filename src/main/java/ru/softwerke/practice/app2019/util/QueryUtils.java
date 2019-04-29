@@ -1,6 +1,7 @@
 package ru.softwerke.practice.app2019.util;
 
 import org.apache.commons.lang3.StringUtils;
+import ru.softwerke.practice.app2019.handler.JSONErrorMessage;
 import ru.softwerke.practice.app2019.model.BillItem;
 
 import javax.ws.rs.WebApplicationException;

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.softwerke.practice.app2019.query.Query;
 import ru.softwerke.practice.app2019.util.*;
 
-import javax.annotation.Priority;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.WebApplicationException;
 import java.time.LocalDate;

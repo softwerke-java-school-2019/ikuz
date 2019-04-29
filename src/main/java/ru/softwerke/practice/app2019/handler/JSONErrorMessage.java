@@ -1,4 +1,4 @@
-package ru.softwerke.practice.app2019.util;
+package ru.softwerke.practice.app2019.handler;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

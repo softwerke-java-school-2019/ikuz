@@ -1,6 +1,6 @@
 # Simple REST-API 
-## Catalog of customers, computer devices and store sales bills.
-### Usage
+#Catalog of customers, computer devices and store sales bills.
+## Usage
 * [Usage](#Usage)
     + [General view of requests](#General-view-of-requests)
     + [Get with additional options](#Get-with-additional-options)
@@ -10,7 +10,7 @@
     + [Error handling](#Error-handling)
     + [UI](#User-interface)
 
-### General view of requests
+## General view of requests
 
 
 * Getting a list of entities:
@@ -26,7 +26,7 @@ GET /api/<entity>/{id}
 ```
 POST /api/<entity> (Body: JSON)
 ```
-#### Supported entities
+### Supported entities
 
 `customer: `
 
@@ -42,7 +42,7 @@ POST /api/<entity> (Body: JSON)
 `device: `
 
 |    Field Name   |               Type              |             Description             |                Example                |
-|:---------------:|:-------------------------------:|:-----------------------------------:|:-------------------------------------:|
+|:---------------:|:-------------------------------:|:-----------------------------------:|:-----------------------------------:|
 |    deviceType   |              string             | device type (from a predefined set) | Smartphone Laptop Smart Watch Tablet  |
 |    modelName    |              string             |                                     |              Galaxy S10+              |
 | manufactureDate | string, date format: dd.MM.YYYY | date of issue                       |               25.04.2019              |
@@ -76,7 +76,7 @@ POST /api/<entity> (Body: JSON)
 * *only parameter `colorRGB` is not required*
 * *api doesn't accept empty or null fields*
 
-#### Get with additional options
+### Get with additional options
 ```
 GET /api/<entity> options
 ```
@@ -94,7 +94,7 @@ GET /api/<entity> options
 ```
 GET /api/bill?deviceId=11&quantity=30&price=499
 ```
-#### Some query examples
+### Some query examples
 
 ```
 POST /api/device
@@ -111,13 +111,13 @@ body:
 
 GET /api/device?priceFrom=100&priceTo=500&orderBy=manufacturer
 ```
-#### Сustom device types
+### Сustom device types
 * *you can add new device type to device type storage and see the available storage types by `GET` query*
 ```
 GET /api/device/type (no arguments)
 POST /api/device/type (Body: String)
 ```
-##### Predefined device types
+#### Predefined device types
 
 | Device type
 |:----------:|
@@ -126,7 +126,7 @@ POST /api/device/type (Body: String)
 |     smart watches   |
 |     tablet   |
 
-#### Сustom colors
+### Сustom colors
 * *you can add new color to color storage and see the available storage colors by `GET` query*
 ```
 GET /api/device/color (no arguments)
@@ -141,7 +141,7 @@ POST /api/device/color (Body: JSON)
 |     colorRGB    | Integer number | integer representation (rgb)      |    0    |
 
 
-##### Predefined colors
+#### Predefined colors
 
 | Color name |    rgb(r, g, b)    |
 |:----------:|:------------------:|
@@ -162,7 +162,7 @@ POST /api/device/color (Body: JSON)
 |    Розовый    | rgb(252, 15, 192)  |
 
 
-#### Error handling
+### Error handling
 
 In case of error this JSON will be returned:
 
@@ -171,5 +171,5 @@ In case of error this JSON will be returned:
 |   error.type  | String | error type    |  invalid query parameter format  |
 | error.message | String | error description | the value '20-04-1980s' of 'birthdate' parameter does not match the date format: dd.MM.yyyy |
 
-#### User interface
+### User interface
 *For convenience and clarity, you can also use UI, which is a simple html page with input fields. It supports all available `GET` and `POST` queries. (Coming soon)*

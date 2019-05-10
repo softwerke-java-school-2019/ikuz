@@ -31,7 +31,7 @@ POST /api/<entity> (Body: JSON)
 `customer: `
 
 | Field Name | Type                            | Description                       |   Example  |
-|:----------:|:-------------------------------:|-----------------------------------|:----------:|
+|:----------:|:-------------------------------:|:---------------------------------:|:----------:|
 |  firstName | string                          |                                   |    Петр    |
 | middleName | string                          |                                   |  Петрович  |
 |  lastName  | string                          |                                   |   Петров   |
@@ -41,8 +41,8 @@ POST /api/<entity> (Body: JSON)
 `device: `
 
 |    Field Name   |               Type              |             Description             |                Example                |
-|:---------------:|:-------------------------------:|:-----------------------------------:|:-----------------------------------:|
-|    deviceType   |              string             | device type (from a predefined set) | Smartphone Laptop Smart Watch Tablet  |
+|:---------------:|:-------------------------------:|:-----------------------------------:|:-------------------------------------:|
+|    deviceType   |              string             | device type (from a predefined set) | Smartphone                            |
 |    modelName    |              string             |                                     |              Galaxy S10+              |
 | manufactureDate | string, date format: dd.MM.YYYY | date of issue                       |               25.04.2019              |
 |   manufacturer  |              string             |                                     |                Samsung                |
@@ -118,12 +118,12 @@ POST /api/device/type (Body: String)
 ```
 #### Predefined device types
 
-| Device type
-|:----------:|
-|    smartphone   |
-|     laptop   |
-|     smart watches   |
-|     tablet   |
+| Device type  |
+|:------------:|
+|smartphone    |
+|laptop        |
+|smart watches |
+|tablet        |
 
 ### Сustom colors
 * *you can add new color to color storage and see the available storage colors by `GET` query*

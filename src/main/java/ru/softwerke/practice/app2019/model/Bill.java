@@ -3,59 +3,69 @@ package ru.softwerke.practice.app2019.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.softwerke.practice.app2019.query.Query;
-import ru.softwerke.practice.app2019.util.DateTimeParam;
-import ru.softwerke.practice.app2019.util.IntegerParam;
+import ru.softwerke.practice.app2019.util.ParseFromStringParam;
 import ru.softwerke.practice.app2019.util.QueryUtils;
 
-import javax.validation.constraints.NotNull;
+import javax.ws.rs.WebApplicationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Bill implements Entity {
     private static final String CUSTOMER_ID_FIELD = "customerId";
     private static final String ITEMS_LIST_FIELD = "items";
     private static final String PURCHASE_DATE_TIME = "purchaseDateTime";
     
-    private static AtomicInteger nextId = new AtomicInteger();
+    private static AtomicLong nextId = new AtomicLong();
     
-    private final int customerId;
+    private final long customerId;
     private final List<BillItem> items;
     private final LocalDateTime purchaseDateTime;
-    private final Integer totalPrice;
-    private final int id;
+    private final Long totalPrice;
+    private final long id;
     
-    public static String getName() {
-        return "a bill";
-    }
+    public static final String ENTITY_TYPE_NAME = "bill";
     
     @JsonCreator
-    public Bill(@NotNull @JsonProperty(value = CUSTOMER_ID_FIELD) String customerId,
-                @NotNull @JsonProperty(value = ITEMS_LIST_FIELD) List<BillItem> items) {
-        IntegerParam customerIdParam = new IntegerParam(customerId, CUSTOMER_ID_FIELD, Query.POST_ENTITY + getName());
-        this.customerId = customerIdParam.getIntegerValue();
-        QueryUtils.checkListForNulls(items, Query.POST_ENTITY + getName());
+    public Bill(@JsonProperty(value = CUSTOMER_ID_FIELD, required = true) String customerId,
+                @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items) throws WebApplicationException {
+        ParseFromStringParam<Long> customerIdParam = new ParseFromStringParam<>(
+                customerId,
+                CUSTOMER_ID_FIELD,
+                Long::parseLong,
+                ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+        );
+        QueryUtils.checkListForNulls(items);
+        
+        this.customerId = customerIdParam.getParsedValue();
         this.items = items;
-        this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(0, Integer::sum);
+        this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(0L, Long::sum);
         this.id = nextId.getAndIncrement();
         this.purchaseDateTime = LocalDateTime.now();
     }
     
-    public Boolean containsDevice(int id) {
+    public Boolean containsDevice(long id) {
         return items.stream().anyMatch(it -> it.getDeviceId() == id);
     }
     
-    public Boolean containsQuantity(int quantity) {
+    public Boolean containsQuantity(long quantity) {
         return items.stream().anyMatch(it -> it.getQuantity() == quantity);
     }
     
-    public Boolean containsPrice(Integer price) {
+    public Boolean containsQuantityGreaterThan(long quantity) {
+        return items.stream().anyMatch(it -> it.getQuantity() >= quantity);
+    }
+    
+    public Boolean containsQuantityLessThan(long quantity) {
+        return items.stream().anyMatch(it -> it.getQuantity() <= quantity);
+    }
+    
+    public Boolean containsPrice(Long price) {
         return items.stream().anyMatch(it -> it.getPrice() == price);
     }
     
-    public int getCustomerId() {
+    public long getCustomerId() {
         return customerId;
     }
     
@@ -71,15 +81,15 @@ public class Bill implements Entity {
     
     @JsonProperty(value = PURCHASE_DATE_TIME)
     public String getDateTimeString() {
-        return purchaseDateTime.format(DateTimeParam.formatter);
+        return purchaseDateTime.format(ParseFromStringParam.dateTimeFormatter);
     }
     
-    public Integer getTotalPrice() {
+    public Long getTotalPrice() {
         return totalPrice;
     }
     
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
     
@@ -88,26 +98,26 @@ public class Bill implements Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bill bill = (Bill) o;
-        return id == bill.id &&
-                customerId == bill.customerId &&
+        return customerId == bill.customerId &&
+                id == bill.id &&
                 Objects.equals(items, bill.items) &&
-                Objects.equals(totalPrice, bill.totalPrice) &&
-                Objects.equals(purchaseDateTime, bill.purchaseDateTime);
+                Objects.equals(purchaseDateTime, bill.purchaseDateTime) &&
+                Objects.equals(totalPrice, bill.totalPrice);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, items, purchaseDateTime, totalPrice);
+        return Objects.hash(customerId, items, purchaseDateTime, totalPrice, id);
     }
     
     @Override
     public String toString() {
         return "Bill{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", items=" + items.toString() +
-                ", purchaseDateTime=" + purchaseDateTime.toString() +
-                ", totalPrice=" + totalPrice.toString() +
+                "customerId=" + customerId +
+                ", items=" + items +
+                ", purchaseDateTime=" + purchaseDateTime +
+                ", totalPrice=" + totalPrice +
+                ", id=" + id +
                 '}';
     }
 }

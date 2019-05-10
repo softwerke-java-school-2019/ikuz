@@ -1,56 +1,38 @@
 package ru.softwerke.practice.app2019.query;
 
-import org.apache.commons.lang3.Validate;
 import ru.softwerke.practice.app2019.model.Entity;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-import static ru.softwerke.practice.app2019.query.FilterOperator.CONTAINS;
 
-public class QueryCondition<T extends Entity, R extends Comparable<? super R>> implements Condition<T> {
-    private final Function<T, R> function;
-    private final FilterOperator operator;
-    private final R queryValueTerm;
-    private final String queryPrefixTerm;
+/**
+ * Class representing filtering query condition
+ *
+ * @param <T> considered entity type
+ * @param <R> object type corresponding to the filtering parameter considered entity
+ */
+public class QueryCondition<T extends Entity, R extends Comparable<? super R>> implements Predicate<T> {
+    private Function<T, R> function;
+    private FilterOperator operator;
+    private R queryValueTerm;
+    private String queryPrefixTerm;
     
     QueryCondition(Function<T, R> function, FilterOperator operator, R queryValueTerm) {
-        Validate.notNull(function, "function can't be null");
-        Validate.notNull(operator, "operator can't be null");
-        Validate.notNull(queryValueTerm, "queryValueTerm can't be null");
         this.function = function;
         this.operator = operator;
         this.queryValueTerm = queryValueTerm;
-        this.queryPrefixTerm = null;
     }
     
     QueryCondition(Function<T, R> function, String queryPrefixTerm) {
-        Validate.notNull(function, "function can't be null");
-        Validate.notNull(queryPrefixTerm, "queryPrefixTerm can't be null");
         this.function = function;
         this.queryPrefixTerm = queryPrefixTerm;
-        this.operator = null;
-        this.queryValueTerm = null;
     }
     
     QueryCondition(Function<T, R> function, FilterOperator operator) {
-        Validate.notNull(function, "function can't be null");
         this.function = function;
         this.operator = operator;
-        this.queryPrefixTerm = null;
-        this.queryValueTerm = null;
-    }
-    
-    public Function<T, R> getFunction() {
-        return function;
-    }
-    
-    public FilterOperator getOperator() {
-        return operator;
-    }
-    
-    public R getQueryValueTerm() {
-        return queryValueTerm;
     }
     
     @Override
@@ -68,10 +50,17 @@ public class QueryCondition<T extends Entity, R extends Comparable<? super R>> i
         return Objects.hash(function, operator, queryValueTerm);
     }
     
+    
+    /**
+     * Overridden method that checks an entity for compliance with a filtering query condition
+     *
+     * @param entity considered entity
+     * @return {@code true} if considered entity satisfies the query otherwise {@code false}
+     */
     @Override
     public boolean test(T entity) {
         R value = function.apply(entity);
-        if (operator == CONTAINS) {
+        if (operator == FilterOperator.CONTAINS) {
             return (Boolean) value;
         }
         if (operator != null) {

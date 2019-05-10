@@ -23,12 +23,18 @@ public class JsonMappingExceptionMapper implements ExceptionMapper<JsonMappingEx
     
     @Override
     public Response toResponse(JsonMappingException exception) {
-        try {
+        if (exception.getCause() instanceof WebApplicationException) {
             return ((WebApplicationException) exception.getCause()).getResponse();
-        } catch (ClassCastException e) {
-            JSONErrorMessage message = JSONErrorMessage.create(Response.Status.BAD_REQUEST,
-                    QueryUtils.INVALID_JSON_ERROR, exception.getOriginalMessage());
-            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+        } else {
+            JSONErrorMessage message = JSONErrorMessage.create(
+                    Response.Status.BAD_REQUEST,
+                    QueryUtils.INVALID_JSON_ERROR,
+                    exception.getOriginalMessage()
+            );
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(message)
+                    .build();
         }
     }
 }

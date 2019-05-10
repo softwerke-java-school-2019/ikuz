@@ -15,15 +15,21 @@ import javax.ws.rs.ext.Provider;
  * Handler of JSON miscellaneous parse errors. Automatically responds with Bad Request on error
  */
 @Provider
-@Priority(2)
+@Priority(1)
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class JsonParsingExceptionMapper implements ExceptionMapper<JsonParseException> {
     
     @Override
     public Response toResponse(JsonParseException exception) {
-        JSONErrorMessage message = JSONErrorMessage.create(Response.Status.BAD_REQUEST,
-                QueryUtils.PARSING_TYPE_ERROR, exception.getOriginalMessage());
-        return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+        JSONErrorMessage message = JSONErrorMessage.create(
+                Response.Status.BAD_REQUEST,
+                QueryUtils.PARSING_TYPE_ERROR,
+                exception.getOriginalMessage()
+        );
+        return Response
+                .status(Response.Status.BAD_REQUEST)
+                .entity(message)
+                .build();
     }
 }

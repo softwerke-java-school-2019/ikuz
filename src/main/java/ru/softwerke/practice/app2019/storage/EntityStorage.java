@@ -1,32 +1,32 @@
 package ru.softwerke.practice.app2019.storage;
 
 import ru.softwerke.practice.app2019.model.Entity;
+import ru.softwerke.practice.app2019.query.Query;
 import ru.softwerke.practice.app2019.query.QueryCondition;
 import ru.softwerke.practice.app2019.query.QueryConditionsHolder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EntityStorage<T extends Entity> implements Storage<T> {
     
-    private List<T> entityList = Collections.synchronizedList(new ArrayList<>());
+    private Map<Long, T> entityMap = new ConcurrentHashMap<>();
     
     @Override
     public T addEntity(T entity) {
-        entityList.add(entity);
+        entityMap.put(entity.getId(), entity);
         return entity;
     }
     
     @Override
-    public List<T> getRequestedListOfEntitiesFromStorage(QueryConditionsHolder<T> queryTerms) {
-        List<QueryCondition<T, ?>> conditions = queryTerms.getQueryConditionList();
-        Stream<T> entityStream = entityList.stream();
+    public List<T> getFilterOrderListFromStorage(Query<T> query) {
+        QueryConditionsHolder<T> queryTerms = query.getConditionsHolder();
+        Collection<QueryCondition<T, ?>> conditions = queryTerms.getQueryConditions();
+        Stream<T> entityStream = entityMap.values().stream();
         for (QueryCondition<T, ?> condition : conditions) {
-            entityStream = entityStream.filter(condition::test);
+            entityStream = entityStream.filter(condition);
         }
         Comparator<T> sortingComparator = queryTerms.getQueryComparator();
         if (sortingComparator != null) {
@@ -47,10 +47,6 @@ public class EntityStorage<T extends Entity> implements Storage<T> {
     
     @Override
     public T getEntityById(long id) {
-        return entityList
-                .stream()
-                .filter(entity -> entity.getId() == id)
-                .findFirst()
-                .orElse(null);
+        return entityMap.get(id);
     }
 }

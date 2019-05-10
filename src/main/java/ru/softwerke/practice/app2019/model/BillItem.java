@@ -3,39 +3,49 @@ package ru.softwerke.practice.app2019.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.softwerke.practice.app2019.util.IntegerParam;
+import ru.softwerke.practice.app2019.util.ParseFromStringParam;
 
-import javax.validation.constraints.NotNull;
+import javax.ws.rs.WebApplicationException;
 import java.util.Objects;
 
 public class BillItem {
     private static final String DEVICE_ID_FIELD = "deviceId";
     private static final String QUANTITY_FIELD = "quantity";
     private static final String PRICE_FIELD = "price";
-    private static final String ADDITIONAL_MESSAGE = "one of the elements of the post bill";
     
-    private final int deviceId;
+    private final long deviceId;
     private final int quantity;
-    private final int price;
+    private final long price;
     
     @JsonCreator
-    public BillItem(
-            @NotNull @JsonProperty(value = DEVICE_ID_FIELD) String deviceId,
-            @NotNull @JsonProperty(value = QUANTITY_FIELD) String quantity,
-            @NotNull @JsonProperty(value = PRICE_FIELD) String price) {
-        IntegerParam deviceIdParam = new IntegerParam(deviceId, DEVICE_ID_FIELD, ADDITIONAL_MESSAGE);
-        IntegerParam quantityParam = new IntegerParam(quantity, QUANTITY_FIELD, ADDITIONAL_MESSAGE);
-        IntegerParam bigDecimalParam = new IntegerParam(price, PRICE_FIELD, ADDITIONAL_MESSAGE);
-        this.deviceId = deviceIdParam.getIntegerValue();
-        this.quantity = quantityParam.getIntegerValue();
-        this.price = bigDecimalParam.getIntegerValue();
+    public BillItem(@JsonProperty(value = DEVICE_ID_FIELD, required = true) String deviceId,
+                    @JsonProperty(value = QUANTITY_FIELD, required = true) String quantity,
+                    @JsonProperty(value = PRICE_FIELD, required = true) String price) throws WebApplicationException {
+        ParseFromStringParam<Long> deviceIdParam = new ParseFromStringParam<>(
+                deviceId,
+                DEVICE_ID_FIELD,
+                ParseFromStringParam.PARSE_LONG_FUN,
+                ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+        );
+        ParseFromStringParam<Integer> quantityParam = new ParseFromStringParam<>(
+                quantity,
+                QUANTITY_FIELD,
+                ParseFromStringParam.PARSE_INTEGER_FUN,
+                ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+        );
+        ParseFromStringParam<Long> priceParam = new ParseFromStringParam<>(
+                price,
+                PRICE_FIELD,
+                ParseFromStringParam.PARSE_LONG_FUN,
+                ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+        );
+        
+        this.deviceId = deviceIdParam.getParsedValue();
+        this.quantity = quantityParam.getParsedValue();
+        this.price = priceParam.getParsedValue();
     }
     
-    private String getName() {
-        return "a billItem";
-    }
-    
-    public int getDeviceId() {
+    public long getDeviceId() {
         return deviceId;
     }
     
@@ -44,11 +54,11 @@ public class BillItem {
     }
     
     @JsonIgnore
-    public int getTotalPrice() {
+    public long getTotalPrice() {
         return price * quantity;
     }
     
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
     
@@ -56,10 +66,10 @@ public class BillItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BillItem that = (BillItem) o;
-        return Objects.equals(deviceId, that.deviceId) &&
-                Objects.equals(quantity, that.quantity) &&
-                Objects.equals(price, that.price);
+        BillItem billItem = (BillItem) o;
+        return deviceId == billItem.deviceId &&
+                quantity == billItem.quantity &&
+                price == billItem.price;
     }
     
     @Override

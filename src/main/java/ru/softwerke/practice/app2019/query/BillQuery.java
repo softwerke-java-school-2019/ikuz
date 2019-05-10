@@ -1,29 +1,36 @@
 package ru.softwerke.practice.app2019.query;
 
 import ru.softwerke.practice.app2019.model.Bill;
-import ru.softwerke.practice.app2019.util.IntegerParam;
-import ru.softwerke.practice.app2019.util.DateTimeParam;
+import ru.softwerke.practice.app2019.util.ParseFromStringParam;
+import ru.softwerke.practice.app2019.util.QueryUtils;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.UriInfo;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The {@code BillQuery} class represents bill filter or order GET-query.
+ */
 public class BillQuery extends Query<Bill> {
     private static Map<String, Comparator<Bill>> orderParamsMap = new HashMap<>();
     
+    private static final String CUSTOMER_ID = "customerId";
+    private static final String PURCHASE_DATE_TIME = "purchaseDateTime";
+    private static final String PURCHASE_DATE_TIME_FROM = "purchaseDateTimeFrom";
+    private static final String PURCHASE_DATE_TIME_TO = "purchaseDateTimeTo";
+    private static final String TOTAL_PRICE = "totalPrice";
+    private static final String TOTAL_PRICE_FROM = "totalPriceFrom";
+    private static final String TOTAL_PRICE_TO = "totalPriceTo";
+    private static final String BILL_ITEM_DEVICE_ID = "deviceId";
+    private static final String BILL_ITEM_QUANTITY = "quantity";
+    private static final String BILL_ITEM_QUANTITY_FROM = "quantityFrom";
+    private static final String BILL_ITEM_QUANTITY_TO = "quantityTo";
+    private static final String BILL_ITEM_PRICE = "price";
     private static final String ORDER_PURCHASE_DATE_TIME_TO = "-purchaseDateTime";
     private static final String ORDER_TOTAL_PRICE_TO = "-totalPrice";
-    
-    public static final String CUSTOMER_ID = "customerId";
-    public static final String PURCHASE_DATE_TIME = "purchaseDateTime";
-    public static final String PURCHASE_DATE_TIME_FROM = "purchaseDateTimeFrom";
-    public static final String PURCHASE_DATE_TIME_TO = "purchaseDateTimeTo";
-    public static final String TOTAL_PRICE = "totalPrice";
-    public static final String TOTAL_PRICE_FROM = "totalPriceFrom";
-    public static final String TOTAL_PRICE_TO = "totalPriceTo";
-    public static final String BILL_ITEM_DEVICE_ID = "deviceId";
-    public static final String BILL_ITEM_QUANTITY = "quantity";
-    public static final String BILL_ITEM_PRICE = "price";
     
     static {
         orderParamsMap.put(CUSTOMER_ID, Comparator.comparing(Bill::getCustomerId));
@@ -33,95 +40,223 @@ public class BillQuery extends Query<Bill> {
         orderParamsMap.put(ORDER_TOTAL_PRICE_TO, Comparator.comparing(Bill::getTotalPrice).reversed());
     }
     
-    public static Map<String, Comparator<Bill>> getOrderParamsMap() {
-        return orderParamsMap;
-    }
-    
-    private BillQuery() {
-        super();
-    }
-    
-    public static class Builder extends Query.Builder<Bill> {
-        
-        public Builder() {
-            queryToBuild = new BillQuery();
-        }
-        
-        public Query<Bill> build() {
-            Query<Bill> builtBillQuery = queryToBuild;
-            queryToBuild = new BillQuery();
-            
-            return builtBillQuery;
-        }
-        
-        public Builder setPurchaseDateTime(DateTimeParam dateTime) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    Bill::getDateTimeString, FilterOperator.EQ,
-                    dateTime.getDateTime().toString()));
-            return this;
-        }
-        
-        public Builder setPurchaseDateTimeFrom(DateTimeParam dateTimeFrom) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    Bill::getDateTimeString, FilterOperator.GREATER_OR_EQ,
-                    dateTimeFrom.getDateTime().toString()));
-            return this;
-        }
-        
-        public Builder setPurchaseDateTimeTo(DateTimeParam dateTimeFrom) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    Bill::getDateTimeString, FilterOperator.LESS_OR_EQ,
-                    dateTimeFrom.getDateTime().toString()));
-            return this;
-        }
-        
-        public Builder setTotalPrice(IntegerParam totalPrice) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    Bill::getTotalPrice, FilterOperator.EQ,
-                    totalPrice.getIntegerValue()));
-            return this;
-        }
-        
-        public Builder setTotalPriceFrom(IntegerParam totalPriceFrom) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    Bill::getTotalPrice, FilterOperator.GREATER_OR_EQ,
-                    totalPriceFrom.getIntegerValue()));
-            return this;
-        }
-        
-        public Builder setTotalPriceTo(IntegerParam totalPriceTo) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    Bill::getTotalPrice, FilterOperator.LESS_OR_EQ,
-                    totalPriceTo.getIntegerValue()));
-            return this;
-        }
-        
-        public Builder setCustomerId(IntegerParam customerId) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    Bill::getCustomerId, FilterOperator.EQ,
-                    customerId.getIntegerValue()));
-            return this;
-        }
-        
-        public Builder setBillItemDeviceId(IntegerParam billItemDeviceId) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    bill -> bill.containsDevice(billItemDeviceId.getIntegerValue()), FilterOperator.CONTAINS
-            ));
-            return this;
-        }
-        
-        public Builder setBillItemQuantity(IntegerParam billItemQuantity) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    bill -> bill.containsQuantity(billItemQuantity.getIntegerValue()), FilterOperator.CONTAINS
-            ));
-            return this;
-        }
-        
-        public Builder setBillItemPrice(IntegerParam billItemPrice) {
-            this.queryToBuild.holder.addFilterCondition(new QueryCondition<>(
-                    bill -> bill.containsPrice(billItemPrice.getIntegerValue()), FilterOperator.CONTAINS
-            ));
-            return this;
+    /**
+     * Bill query constructor
+     *
+     * Constructs a bill query by parsing the {@code UriInfo}. After calling the {@link Query(UriInfo)} constructor
+     * all remaining unprocessed key-value parameters of bill are contained in {@link Query#queryParams}.
+     * Each key parameter is checked for compliance with the filtering option if the key does not match
+     * any of the filtering options than the method {@link QueryUtils#getWrongParamsMessage(String)} is called.
+     * {@link Query#queryParams} is {@code MultivaluedMap}, where each key is associated with a list of arguments, because each key
+     * can be used several times, this API takes the value corresponding to the first appearance of the key in the query, for example,
+     * in query: <blockquote>http://localhost:8080/api/bill?totalPrice=1000&customerId=20&totalPrice=500</blockquote>
+     * only the first value=1000 for the key=totalPrice will be taken
+     *
+     * @param uriInfo  URI information taken from GET-query.
+     * @throws WebApplicationException
+     *         if key of {@link Query#queryParams} is none of filtering bill option or
+     *         if it was thrown by the following classes: {@link ParseFromStringParam} or
+     *         the following method {@link Query#addOrderType}}
+     */
+    public BillQuery(UriInfo uriInfo) throws WebApplicationException {
+        super(uriInfo);
+        for (String key : queryParams.keySet()) {
+            switch (key) {
+                case BillQuery.CUSTOMER_ID: {
+                    ParseFromStringParam<Long> customerId = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.CUSTOMER_ID,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    Bill::getCustomerId,
+                                    FilterOperator.EQ,
+                                    customerId.getParsedValue()
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.PURCHASE_DATE_TIME: {
+                    ParseFromStringParam<LocalDateTime> dateTime = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.PURCHASE_DATE_TIME,
+                            ParseFromStringParam.PARSE_DATE_TIME_FUN,
+                            ParseFromStringParam.DATE_TIME_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    Bill::getPurchaseDateTime,
+                                    FilterOperator.EQ,
+                                    dateTime.getParsedValue()
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.PURCHASE_DATE_TIME_FROM: {
+                    ParseFromStringParam<LocalDateTime> dateTimeFrom = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.PURCHASE_DATE_TIME_FROM,
+                            ParseFromStringParam.PARSE_DATE_TIME_FUN,
+                            ParseFromStringParam.DATE_TIME_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    Bill::getPurchaseDateTime,
+                                    FilterOperator.GREATER_OR_EQ,
+                                    dateTimeFrom.getParsedValue()
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.PURCHASE_DATE_TIME_TO: {
+                    ParseFromStringParam<LocalDateTime> dateTimeTo = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.PURCHASE_DATE_TIME_TO,
+                            ParseFromStringParam.PARSE_DATE_TIME_FUN,
+                            ParseFromStringParam.DATE_TIME_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    Bill::getPurchaseDateTime,
+                                    FilterOperator.LESS_OR_EQ,
+                                    dateTimeTo.getParsedValue()
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.TOTAL_PRICE: {
+                    ParseFromStringParam<Long> totalPrice = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.TOTAL_PRICE,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    Bill::getTotalPrice,
+                                    FilterOperator.EQ,
+                                    totalPrice.getParsedValue()
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.TOTAL_PRICE_FROM: {
+                    ParseFromStringParam<Long> totalPriceFrom = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.TOTAL_PRICE_FROM,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    Bill::getTotalPrice,
+                                    FilterOperator.GREATER_OR_EQ,
+                                    totalPriceFrom.getParsedValue()
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.TOTAL_PRICE_TO: {
+                    ParseFromStringParam<Long> totalPriceTo = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.TOTAL_PRICE_TO,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    Bill::getTotalPrice,
+                                    FilterOperator.LESS_OR_EQ,
+                                    totalPriceTo.getParsedValue()
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.BILL_ITEM_DEVICE_ID: {
+                    ParseFromStringParam<Long> billItemDeviceId = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.BILL_ITEM_DEVICE_ID,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    bill -> bill.containsDevice(billItemDeviceId.getParsedValue()),
+                                    FilterOperator.CONTAINS
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.BILL_ITEM_PRICE: {
+                    ParseFromStringParam<Long> billItemPrice = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.BILL_ITEM_PRICE,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    bill -> bill.containsPrice(billItemPrice.getParsedValue()),
+                                    FilterOperator.CONTAINS
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.BILL_ITEM_QUANTITY: {
+                    ParseFromStringParam<Long> billItemQuantity = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.BILL_ITEM_QUANTITY,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    bill -> bill.containsQuantity(billItemQuantity.getParsedValue()),
+                                    FilterOperator.CONTAINS
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.BILL_ITEM_QUANTITY_FROM: {
+                    ParseFromStringParam<Long> billItemQuantityFrom = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.BILL_ITEM_QUANTITY_FROM,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    bill -> bill.containsQuantityGreaterThan(billItemQuantityFrom.getParsedValue()),
+                                    FilterOperator.CONTAINS
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.BILL_ITEM_QUANTITY_TO: {
+                    ParseFromStringParam<Long> billItemQuantityTo = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.BILL_ITEM_QUANTITY_TO,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    bill -> bill.containsQuantityLessThan(billItemQuantityTo.getParsedValue()),
+                                    FilterOperator.CONTAINS
+                            )
+                    );
+                    break;
+                }
+                case Query.ORDER_TYPE: {
+                    addOrderType(queryParams.getFirst(key), BillQuery.orderParamsMap);
+                    break;
+                }
+                default: {
+                    QueryUtils.getWrongParamsMessage(key);
+                }
+            }
         }
     }
 }

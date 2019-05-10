@@ -3,11 +3,10 @@ package ru.softwerke.practice.app2019.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.softwerke.practice.app2019.query.Query;
-import ru.softwerke.practice.app2019.util.DateParam;
+import ru.softwerke.practice.app2019.util.ParseFromStringParam;
 import ru.softwerke.practice.app2019.util.StringParam;
 
-import javax.validation.constraints.NotNull;
+import javax.ws.rs.WebApplicationException;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,30 +23,43 @@ public class Customer implements Entity {
     private final String lastName;
     private final String middleName;
     private final LocalDate birthDate;
-    private final int id;
+    private final long id;
     
-    public static String getName() {
-        return "a customer";
-    }
+    public static final String ENTITY_TYPE_NAME = "customer";
     
     @JsonCreator
-    public Customer(@NotNull @JsonProperty(value = FIRST_NAME_FIELD) String firstName,
-                    @NotNull @JsonProperty(value = LAST_NAME_FIELD) String lastName,
-                    @NotNull @JsonProperty(value = MIDDLE_NAME) String middleName,
-                    @NotNull @JsonProperty(value = BIRTH_DATE_FIELD) String birthDate) {
-        StringParam firstNameParam = new StringParam(firstName, FIRST_NAME_FIELD, Query.POST_ENTITY + getName());
-        StringParam lastNameParam = new StringParam(lastName, LAST_NAME_FIELD, Query.POST_ENTITY + getName());
-        StringParam middleNameParam = new StringParam(middleName, MIDDLE_NAME, Query.POST_ENTITY + getName());
-        DateParam birthDateParam = new DateParam(birthDate, BIRTH_DATE_FIELD, Query.POST_ENTITY + getName());
+    public Customer(@JsonProperty(value = FIRST_NAME_FIELD, required = true) String firstName,
+                    @JsonProperty(value = LAST_NAME_FIELD, required = true) String lastName,
+                    @JsonProperty(value = MIDDLE_NAME, required = true) String middleName,
+                    @JsonProperty(value = BIRTH_DATE_FIELD, required = true) String birthDate) throws WebApplicationException {
+        StringParam firstNameParam = new StringParam(
+                firstName,
+                FIRST_NAME_FIELD
+        );
+        StringParam lastNameParam = new StringParam(
+                lastName,
+                LAST_NAME_FIELD
+        );
+        StringParam middleNameParam = new StringParam(
+                middleName,
+                MIDDLE_NAME
+        );
+        ParseFromStringParam<LocalDate> birthDateParam = new ParseFromStringParam<>(
+                birthDate,
+                BIRTH_DATE_FIELD,
+                ParseFromStringParam.PARSE_DATE_FUN,
+                ParseFromStringParam.DATE_FORMAT
+        );
+        
         this.firstName = firstNameParam.getValue();
         this.lastName = lastNameParam.getValue();
         this.middleName = middleNameParam.getValue();
-        this.birthDate = birthDateParam.getDate();
+        this.birthDate = birthDateParam.getParsedValue();
         this.id = nextId.getAndIncrement();
     }
     
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
     
@@ -70,7 +82,7 @@ public class Customer implements Entity {
     
     @JsonProperty(value = BIRTH_DATE_FIELD)
     public String getBirthDateString() {
-        return birthDate.format(DateParam.formatter);
+        return birthDate.format(ParseFromStringParam.dateFormatter);
     }
     
     @Override
@@ -87,17 +99,17 @@ public class Customer implements Entity {
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, middleName, birthDate);
+        return Objects.hash(firstName, lastName, middleName, birthDate, id);
     }
     
     @Override
     public String toString() {
         return "Customer{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
+                "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
-                ", birthdate=" + birthDate.toString() +
+                ", birthDate=" + birthDate +
+                ", id=" + id +
                 '}';
     }
 }

@@ -1,5 +1,5 @@
 # Simple REST-API 
-#Catalog of customers, computer devices and store sales bills.
+# Catalog of customers, computer devices and store sales bills.
 ## Usage
 * [Usage](#Usage)
     + [General view of requests](#General-view-of-requests)
@@ -37,7 +37,6 @@ POST /api/<entity> (Body: JSON)
 |  lastName  | string                          |                                   |   Петров   |
 |  birthdate | string, date format: dd.MM.YYYY | birth date                        | 25.04.2019 |
 |     id     | Integer number                  | unique id generated upon creation |    9000    |
-|
 
 `device: `
 

@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * The class stores all the conditions of the query: filtering, sorting comparator, the number of pages, the number of objects on the page,
- * or an offset, if the page parameter is not specified
+ * The class stores all the conditions of the query: filtering, sorting comparator, the number of pages,
+ * the number of objects on the page or an offset, if the page parameter is not specified
  *
  * @param <T> considered entity type
  */

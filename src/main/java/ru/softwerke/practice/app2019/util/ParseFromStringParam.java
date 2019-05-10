@@ -39,8 +39,8 @@ public class ParseFromStringParam<T> extends StringParam {
     
     /**
      * Validate value entered by user. Converts all of the characters in this {@code String} to lower case and
-     * make string with any leading and trailing whitespace removed, parses a string into {@code T} data type that corresponds the format
-     * passed by {@code format}.
+     * make string with any leading and trailing whitespace removed, parses a string into {@code T}
+     * data type that corresponds the format passed by {@code format}.
      * Stores the created value with the appropriate type .
      *
      * @param valueByString value represented by string
@@ -49,10 +49,12 @@ public class ParseFromStringParam<T> extends StringParam {
      * @param format format corresponding to {@code T} data type
      *
      * @throws WebApplicationException with response's status 400 {@code Response.Status.BAD_REQUEST}
-     *         if the entered value is empty string on null or has too large length (if it thrown by {@link StringParam} superclass)
-     *         if the value does not correspond the format
-     *         if values of some types do not pass additional validation {@link QueryUtils#checkIsDateTimeBeforeNow(LocalDateTime, String)},
-     *         {@link QueryUtils#checkIsDateBeforeNow(LocalDate, String)}, {@link QueryUtils#checkIsPositiveNumber(String, String)}
+     *         if the entered value is empty string on null or has too large length
+     *         (if it thrown by {@link StringParam} superclass) if the value does not correspond the format
+     *         if values of some types do not pass additional validation
+     *         {@link QueryUtils#checkIsDateTimeBeforeNow(LocalDateTime, String)},
+     *         {@link QueryUtils#checkIsDateBeforeNow(LocalDate, String)},
+     *         {@link QueryUtils#checkIsPositiveNumber(String, String)}
      */
     public ParseFromStringParam(String valueByString, String fieldName, Function<String, T> parseFunction, String format)
             throws WebApplicationException {

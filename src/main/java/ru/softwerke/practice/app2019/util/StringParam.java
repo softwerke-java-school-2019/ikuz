@@ -13,8 +13,8 @@ public class StringParam {
     
     /**
      * Validate value entered by user. Converts all of the characters in this {@code String} to lower case and
-     * make string with any leading and trailing whitespace removed, parses a string into a list of several values for a given query key.
-     * Stores the created string.
+     * make string with any leading and trailing whitespace removed, parses a string into a list of several values
+     * for a given query key. Stores the created string.
      *
      * @param value string entered by user - the value of filter or order parameter key in query
      * @param fieldName auxiliary parameter needed to display the correct error message - the key of filter or order query

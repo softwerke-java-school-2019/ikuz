@@ -41,9 +41,10 @@ public class Query<T extends Entity> {
      * and ordering queries for different entities.
      *
      * Each key parameter is checked for compliance with the filtering option(count, page, offset).
-     * {@link Query#queryParams} is {@code MultivaluedMap}, where each key is associated with a list of arguments, cause each key
-     * can be used several times in URI query, this API takes the value corresponding to the first appearance of the key in the query,
-     * for example in query: <blockquote>http://localhost:8080/api/bill?count=10&customerId=20&count=5</blockquote>
+     * {@link Query#queryParams} is {@code MultivaluedMap}, where each key is associated with a list of arguments,
+     * cause each key can be used several times in URI query, this API takes the value corresponding
+     * to the first appearance of the key in the query, for example in query:
+     * <blockquote>http://localhost:8080/api/bill?count=10&customerId=20&count=5</blockquote>
      * only the first value=10 for the key=count will be taken.
      *
      * After parsing common keys(count, page, offset) they are deleted for further parsing of the query in subclasses and

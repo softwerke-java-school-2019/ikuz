@@ -20,7 +20,8 @@ public class MultiStringParam extends StringParam {
      * @param value string entered by user - the value of filter or order parameter key in query
      * @param fieldName auxiliary parameter needed to display the correct error message - the key of filter or order query
      * @throws WebApplicationException with response's status 400 {@code Response.Status.BAD_REQUEST}
-     *         if the entered value is empty string on null or has too large length (if it thrown by {@link StringParam} superclass)
+     *         if the entered value is empty string on null or has too large length (if it thrown by
+     *         {@link StringParam} superclass)
      *         if at least one of the list items separated by commas is empty or null
      */
     public MultiStringParam(String value, String fieldName) throws WebApplicationException {

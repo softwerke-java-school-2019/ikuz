@@ -47,9 +47,10 @@ public class BillQuery extends Query<Bill> {
      * all remaining unprocessed key-value parameters of bill are contained in {@link Query#queryParams}.
      * Each key parameter is checked for compliance with the filtering option if the key does not match
      * any of the filtering options than the method {@link QueryUtils#getWrongParamsMessage(String)} is called.
-     * {@link Query#queryParams} is {@code MultivaluedMap}, where each key is associated with a list of arguments, because each key
-     * can be used several times, this API takes the value corresponding to the first appearance of the key in the query, for example,
-     * in query: <blockquote>http://localhost:8080/api/bill?totalPrice=1000&customerId=20&totalPrice=500</blockquote>
+     * {@link Query#queryParams} is {@code MultivaluedMap}, where each key is associated with a list of arguments,
+     * because each key can be used several times, this API takes the value corresponding to the first appearance
+     * of the key in the query, for example, in query:
+     * <blockquote>http://localhost:8080/api/bill?totalPrice=1000&customerId=20&totalPrice=500</blockquote>
      * only the first value=1000 for the key=totalPrice will be taken
      *
      * @param uriInfo  URI information taken from GET-query.

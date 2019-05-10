@@ -98,7 +98,8 @@ public class QueryUtils {
      *
      * @param localDate value by {@code LocalDate} of date parameter of query
      * @param fieldName key parameter of the query
-     * @throws WebApplicationException with response's status 400 {@code Response.Status.BAD_REQUEST} if the date exceeds today's date
+     * @throws WebApplicationException with response's status 400 {@code Response.Status.BAD_REQUEST}
+     * if the date exceeds today's date
      */
     static void checkIsDateBeforeNow(LocalDate localDate, String fieldName) throws WebApplicationException {
         if (localDate.compareTo(LocalDate.now()) > 0) {
@@ -116,7 +117,8 @@ public class QueryUtils {
      *
      * @param localDateTime value by {@code LocalDateTime} of dateTime parameter of query
      * @param fieldName     key parameter of the query
-     * @throws WebApplicationException with response's status 400 {@code Response.Status.BAD_REQUEST} if the time exceeds current dateTime
+     * @throws WebApplicationException with response's status 400 {@code Response.Status.BAD_REQUEST}
+     * if the time exceeds current dateTime
      */
     static void checkIsDateTimeBeforeNow(LocalDateTime localDateTime, String fieldName) throws WebApplicationException {
         if (localDateTime.compareTo(LocalDateTime.now()) > 0) {

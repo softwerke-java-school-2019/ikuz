@@ -35,7 +35,7 @@ POST /api/<entity> (Body: JSON)
 |  firstName | string                          |                                   |    Петр    |
 | middleName | string                          |                                   |  Петрович  |
 |  lastName  | string                          |                                   |   Петров   |
-|  birthdate | string, date format: dd.MM.YYYY | birth date                        | 25.04.2019 |
+|  birthdate | string, date format: dd.MM.YYYY |             birth date            | 25.04.2019 |
 |     id     | Integer number                  | unique id generated upon creation |    9000    |
 
 `device: `

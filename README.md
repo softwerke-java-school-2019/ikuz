@@ -1,5 +1,5 @@
 # Simple REST-API 
-# Catalog of customers, computer devices and store sales bills.
+# Catalog of customers, computer devices and store sales bills
 ## Usage
 * [Usage](#Usage)
     + [General view of requests](#General-view-of-requests)

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>POST bill</title>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body class="common">
+<main>
+    <h2 class="title">Bill POST query</h2>
+    <ul class="form-group">
+        <li class="props-item">
+            <label class="form-label">Customer's Id:
+                <input class="form-input customerId" id="customerId" pattern="0|(^[1-9]\d*$)" placeholder="0" type="text"
+                       onchange="findEntityWithId(this, 'customer')" autocomplete="off" required>
+            </label>
+        </li>
+        <li class="form-label">Bill Items:
+            <ul class="form-label bill-item">Item:
+                <li class="props-item additional-left-indent">Device's Id:
+                    <label class="form-label additional-left-indent">
+                        <input class="form-input additional-left-indent deviceId" pattern="0|(^[1-9]\d*$)" placeholder="0" type="text"
+                               onchange="findEntityWithId(this, 'device')" autocomplete="off" required>
+                    </label>
+                </li>
+                <li class="props-item additional-left-indent">Quantity:
+                    <label class="form-label additional-left-indent">
+                        <input class="form-input additional-left-indent quantity"
+                               placeholder="100" pattern="(^[1-9]\d*$)" type="text" autocomplete="off" required>
+                    </label>
+                </li>
+                <li class="props-item additional-left-indent">Price:
+                    <label class="form-label additional-left-indent">
+                        <input class="form-input additional-left-indent price"
+                               placeholder="490" pattern="(^[1-9]\d*$)" type="text" autocomplete="off" required>
+                    </label>
+                </li>
+            </ul>
+            <button class="bill-item-button bill-item-button-add" onclick="addBillItem(this)">add new bill item</button>
+            <button class="bill-item-button bill-item-button-remove" onclick="removeBillItem(this)">remove last bill item</button>
+        </li>
+    </ul>
+
+    <button class="submit-button" onclick="sendPostForm('bill')">submit</button>
+    <div id="waiting-for-answer"></div>
+    <pre class="json-message" id="response"></pre>
+</main>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../js/postQuery.js"></script>
+<script src="../../js/common.js"></script>
+</html>

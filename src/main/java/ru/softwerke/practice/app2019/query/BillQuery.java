@@ -29,6 +29,8 @@ public class BillQuery extends Query<Bill> {
     private static final String BILL_ITEM_QUANTITY_FROM = "quantityFrom";
     private static final String BILL_ITEM_QUANTITY_TO = "quantityTo";
     private static final String BILL_ITEM_PRICE = "price";
+    private static final String BILL_ITEM_PRICE_FROM = "priceFrom";
+    private static final String BILL_ITEM_PRICE_TO = "priceTo";
     private static final String ORDER_PURCHASE_DATE_TIME_TO = "-purchaseDateTime";
     private static final String ORDER_TOTAL_PRICE_TO = "-totalPrice";
     
@@ -205,6 +207,36 @@ public class BillQuery extends Query<Bill> {
                     );
                     break;
                 }
+                case BillQuery.BILL_ITEM_PRICE_FROM: {
+                    ParseFromStringParam<Long> billItemPriceFrom = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.BILL_ITEM_PRICE,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    bill -> bill.containsPriceGreaterThan(billItemPriceFrom.getParsedValue()),
+                                    FilterOperator.CONTAINS
+                            )
+                    );
+                    break;
+                }
+                case BillQuery.BILL_ITEM_PRICE_TO: {
+                    ParseFromStringParam<Long> billItemPriceTo = new ParseFromStringParam<>(
+                            queryParams.getFirst(key),
+                            BillQuery.BILL_ITEM_PRICE,
+                            ParseFromStringParam.PARSE_LONG_FUN,
+                            ParseFromStringParam.POSITIVE_NUMBER_FORMAT
+                    );
+                    holder.addFilterCondition(
+                            new QueryCondition<>(
+                                    bill -> bill.containsPriceLessThan(billItemPriceTo.getParsedValue()),
+                                    FilterOperator.CONTAINS
+                            )
+                    );
+                    break;
+                }
                 case BillQuery.BILL_ITEM_QUANTITY: {
                     ParseFromStringParam<Long> billItemQuantity = new ParseFromStringParam<>(
                             queryParams.getFirst(key),
@@ -259,5 +291,14 @@ public class BillQuery extends Query<Bill> {
                 }
             }
         }
+    }
+    
+    /**
+     * Constructor for more convenient testing bill queries
+     *
+     * @param holder stores filtering, sorting and output parameters for bill queries
+     */
+    public BillQuery(QueryConditionsHolder<Bill> holder) {
+        super(holder);
     }
 }

@@ -27,7 +27,7 @@ public class Query<T extends Entity> {
     
     private Comparator<T> entityComparator;
     
-    static final String ORDER_TYPE = "orderBy";
+    public static final String ORDER_TYPE = "orderBy";
     
     public static final String ID = "ID";
     
@@ -101,6 +101,15 @@ public class Query<T extends Entity> {
         queryParams.remove(Query.COUNT);
         queryParams.remove(Query.PAGE);
         queryParams.remove(Query.OFFSET);
+    }
+    
+    /**
+     * Constructor for more convenient testing
+     *
+     * @param holder stores filtering, sorting and output parameters
+     */
+    public Query(QueryConditionsHolder<T> holder) {
+        this.holder = holder;
     }
     
     /**

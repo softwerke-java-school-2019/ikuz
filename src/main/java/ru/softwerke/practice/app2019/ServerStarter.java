@@ -35,7 +35,10 @@ public class ServerStarter {
         if (indexURL == null) {
             throw new RuntimeException("Unable to find static resources");
         }
-        URI staticResourcesRootUri = URI.create(indexURL.toURI().toASCIIString().replaceFirst("/index.html$", "/"));
+        URI staticResourcesRootUri = URI
+                .create(indexURL.toURI()
+                .toASCIIString()
+                .replaceFirst("/index.html$", "/"));
 
         Server server = new Server(8080);
 

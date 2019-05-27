@@ -1,19 +1,7 @@
 package ru.softwerke.practice.app2019.service;
 
-import org.junit.jupiter.api.Test;
+import java.util.Random;
 
 class EntityServiceImplTest {
-    
-    @Test
-    void test1() {
-    
-    }
-    
-    @Test
-    void getEntity() {
-    }
-    
-    @Test
-    void getRequestedListOfEntities() {
-    }
+    static Random random = new Random(2019);
 }

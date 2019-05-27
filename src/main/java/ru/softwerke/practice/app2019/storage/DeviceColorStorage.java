@@ -16,7 +16,7 @@ public class DeviceColorStorage {
     private final Collection<Integer> colorRGBList = new ConcurrentLinkedDeque<>();
     
     public Color addColorToStorage(Color color) {
-        if (!colorMap.containsValue(color)) {
+        if (!this.containsColorName(color.getColorName())) {
             colorMap.put(color.getColorName(), color);
             colorRGBList.add(color.getColorRGB());
         }
@@ -24,7 +24,8 @@ public class DeviceColorStorage {
     }
     
     /**
-     * Get list of colors in natural order
+     * Get list of colors in natural order of their names
+     *
      * @return list if device colors
      */
     public List<Color> getColorListFromStorage() {
@@ -35,18 +36,42 @@ public class DeviceColorStorage {
                 .collect(Collectors.toList());
     }
     
+    /**
+     * Check that storage contains color with such name ignoring case
+     *
+     * @param colorName name to check
+     * @return {@code true} if the color with such name is present in storage otherwise {@code false}
+     */
     public boolean containsColorName(String colorName) {
-        return colorMap.containsKey(colorName);
+        for (String color : colorMap.keySet()) {
+            if (colorName.equalsIgnoreCase(color)) {
+                return true;
+            }
+        }
+        return false;
     }
     
+    /**
+     * Get color by colorName
+     *
+     * @param colorName name with which the specified color is to be associated
+     * @return the color associated with the passed colorName if it present in storage otherwise {@code null}
+     */
     public Color getColor(String colorName) {
-        return colorMap.get(colorName);
+        for (String color : colorMap.keySet()) {
+            if (colorName.equalsIgnoreCase(color)) {
+                return colorMap.get(color);
+            }
+        }
+        return null;
     }
     
-    public Integer getColorRGB(String colorName) {
-        return colorMap.get(colorName).getColorRGB();
-    }
-    
+    /**
+     * Check that storage contains color with such colorRGB code
+     *
+     * @param colorRGB code to check
+     * @return {@code true} if the color with such colorRGB code is present in storage otherwise {@code false}
+     */
     public boolean containsColorRGB(Integer colorRGB) {
         return colorRGBList.contains(colorRGB);
     }

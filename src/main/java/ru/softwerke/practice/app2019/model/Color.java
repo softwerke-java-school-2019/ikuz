@@ -13,7 +13,7 @@ public class Color {
     private static final String COLOR_RGB_FIELD = "colorRGB";
     
     private final String colorName;
-    private final int colorRGB;
+    private final Integer colorRGB;
     
     @JsonCreator
     public Color(
@@ -44,7 +44,7 @@ public class Color {
         return colorName;
     }
     
-    public int getColorRGB() {
+    public Integer getColorRGB() {
         return colorRGB;
     }
     
@@ -53,7 +53,7 @@ public class Color {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Color color = (Color) o;
-        return colorRGB == color.colorRGB &&
+        return colorRGB.equals(color.colorRGB) &&
                 Objects.equals(colorName, color.colorName);
     }
     

@@ -31,7 +31,8 @@ public class Customer implements Entity {
     public Customer(@JsonProperty(value = FIRST_NAME_FIELD, required = true) String firstName,
                     @JsonProperty(value = LAST_NAME_FIELD, required = true) String lastName,
                     @JsonProperty(value = MIDDLE_NAME, required = true) String middleName,
-                    @JsonProperty(value = BIRTH_DATE_FIELD, required = true) String birthDate) throws WebApplicationException {
+                    @JsonProperty(value = BIRTH_DATE_FIELD, required = true) String birthDate)
+            throws WebApplicationException {
         StringParam firstNameParam = new StringParam(
                 firstName,
                 FIRST_NAME_FIELD

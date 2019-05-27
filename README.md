@@ -171,4 +171,4 @@ In case of error this JSON will be returned:
 | error.message | String | error description | the value '20-04-1980s' of 'birthdate' parameter does not match the date format: dd.MM.yyyy |
 
 ### User interface
-*For convenience and clarity, you can also use UI, which is a simple html page with input fields. It supports all available `GET` and `POST` queries. (Coming soon)*
+*For convenience and clarity, you can also use UI, which is a simple html page with input fields. It supports all available `GET` and `POST` queries.*

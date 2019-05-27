@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>POST customer</title>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body class="common" onload="validatePropById('birthdate')">
+<main>
+    <h2 class="title">Customer POST query</h2>
+    <ul class="form-group">
+        <li class="props-item">
+            <label class="form-label">Fist Name:
+                <input class="form-input" id="firstName" placeholder="Ivan" type="text" autocomplete="off" required>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Middle Name:
+                <input class="form-input" id="middleName" placeholder="Ivanovich" type="text" autocomplete="off" required>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Last Name:
+                <input class="form-input" id="lastName" placeholder="Ivanov" type="text" autocomplete="off" required>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Birth Date:
+                <input class="form-input date" id="birthdate" placeholder="01.01.1999" type="text" autocomplete="off"
+                       onkeyup="validatePropById('birthdate')"
+                       required>
+            </label>
+        </li>
+    </ul>
+
+    <button class="submit-button" onclick="sendPostForm('customer')">submit</button>
+    <div id="waiting-for-answer"></div>
+    <pre class="json-message" id="response"></pre>
+</main>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../js/postQuery.js"></script>
+<script src="../../js/common.js"></script>
+</html>

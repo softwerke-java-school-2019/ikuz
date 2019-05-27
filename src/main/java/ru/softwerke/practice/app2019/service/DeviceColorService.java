@@ -36,14 +36,16 @@ public class DeviceColorService {
     public Color putColor(Color color) throws WebApplicationException {
         String colorName = color.getColorName();
         Integer colorRGB = color.getColorRGB();
-        if (deviceColorStorage.containsColorName(colorName) && !deviceColorStorage.getColorRGB(colorName).equals(colorRGB)) {
+        if (deviceColorStorage.containsColorName(colorName)
+                && !deviceColorStorage.getColor(colorName).getColorRGB().equals(colorRGB)) {
             Response response = QueryUtils.getResponseWithMessage(
                     Response.Status.BAD_REQUEST,
                     QueryUtils.INVALID_FORMAT_TYPE_ERROR,
-                    String.format("entered colorRGB code '%d' is different from the code '%d' in the database for colorName: '%s'",
+                    String.format(
+                            "entered colorRGB code '%d' is different from the code '%d' in the database for colorName: '%s'",
                             colorRGB,
-                            deviceColorStorage.getColorRGB(colorName),
-                            colorName
+                            deviceColorStorage.getColor(colorName).getColorRGB(),
+                            deviceColorStorage.getColor(colorName).getColorName()
                     )
             );
             throw new WebApplicationException(response);

@@ -37,10 +37,10 @@ public class ShopApplication extends ResourceConfig {
     
     private DeviceTypeService deviceTypeService() {
         DeviceTypeService deviceTypeService = DeviceTypeService.getInstance();
-        deviceTypeService.putDeviceType("smartphone");
-        deviceTypeService.putDeviceType("laptop");
-        deviceTypeService.putDeviceType("smart watches");
-        deviceTypeService.putDeviceType("tablet");
+        deviceTypeService.putDeviceType("Smartphone");
+        deviceTypeService.putDeviceType("Laptop");
+        deviceTypeService.putDeviceType("Smart Watches");
+        deviceTypeService.putDeviceType("Tablet");
         return deviceTypeService;
     }
     
@@ -64,4 +64,3 @@ public class ShopApplication extends ResourceConfig {
         return deviceColorService;
     }
 }
-//TODO: Unit tests, UI

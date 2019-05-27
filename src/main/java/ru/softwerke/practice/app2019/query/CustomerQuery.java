@@ -200,4 +200,13 @@ public class CustomerQuery extends Query<Customer> {
             }
         }
     }
+    
+    /**
+     * Constructor for more convenient testing customer queries
+     *
+     * @param holder stores filtering, sorting and output parameters for customer queries
+     */
+    public CustomerQuery(QueryConditionsHolder<Customer> holder) {
+        super(holder);
+    }
 }

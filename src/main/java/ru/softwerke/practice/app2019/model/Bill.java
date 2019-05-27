@@ -65,6 +65,13 @@ public class Bill implements Entity {
         return items.stream().anyMatch(it -> it.getPrice() == price);
     }
     
+    public Boolean containsPriceGreaterThan(Long price) {
+        return items.stream().anyMatch(it -> it.getPrice() >= price);
+    }
+    public Boolean containsPriceLessThan(Long price) {
+        return items.stream().anyMatch(it -> it.getPrice() <= price);
+    }
+    
     public long getCustomerId() {
         return customerId;
     }

@@ -19,18 +19,18 @@ public class QueryCondition<T extends Entity, R extends Comparable<? super R>> i
     private R queryValueTerm;
     private String queryPrefixTerm;
     
-    QueryCondition(Function<T, R> function, FilterOperator operator, R queryValueTerm) {
+    public QueryCondition(Function<T, R> function, FilterOperator operator, R queryValueTerm) {
         this.function = function;
         this.operator = operator;
         this.queryValueTerm = queryValueTerm;
     }
     
-    QueryCondition(Function<T, R> function, String queryPrefixTerm) {
+    public QueryCondition(Function<T, R> function, String queryPrefixTerm) {
         this.function = function;
         this.queryPrefixTerm = queryPrefixTerm;
     }
     
-    QueryCondition(Function<T, R> function, FilterOperator operator) {
+    public QueryCondition(Function<T, R> function, FilterOperator operator) {
         this.function = function;
         this.operator = operator;
     }
@@ -64,7 +64,12 @@ public class QueryCondition<T extends Entity, R extends Comparable<? super R>> i
             return (Boolean) value;
         }
         if (operator != null) {
-            int cmp = value.compareTo(queryValueTerm);
+            int cmp;
+            if (value instanceof String && queryValueTerm instanceof String) {
+                cmp = ((String) value).compareToIgnoreCase((String) queryValueTerm);
+            } else  {
+                cmp = value.compareTo(queryValueTerm);
+            }
             switch (operator) {
                 case NOT_EQ:
                     return cmp != 0;
@@ -81,8 +86,8 @@ public class QueryCondition<T extends Entity, R extends Comparable<? super R>> i
             }
             return false;
         } else {
-            String valueToString = value.toString();
-            return valueToString.startsWith(queryPrefixTerm);
+            String valueToString = value.toString().toLowerCase();
+            return valueToString.startsWith(queryPrefixTerm.toLowerCase());
         }
     }
 }

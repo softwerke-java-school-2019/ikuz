@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>POST device</title>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css">
+</head>
+<body class="common" onload="initProps('color'); initProps('type'); validatePropById('manufactureDate')">
+<main>
+    <h2 class="title">Device POST query</h2>
+    <ul class="form-group">
+        <li class="props-item">
+            <label class="form-label">Manufacturer:
+                <input class="form-input" id="manufacturer" placeholder="Foxconn" type="text" autocomplete="off" required>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Model Name:
+                <input class="form-input" id="modelName" placeholder="iPhone" type="text" autocomplete="off" required>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Device Type:
+                <input class="form-input" id="deviceType" list="deviceTypeList" placeholder="Smartphone" type="text" autocomplete="off"
+                       required>
+
+                <datalist class="device-type-list" id="deviceTypeList">
+                </datalist>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Manufacture Date:
+                <input class="form-input date" id="manufactureDate" placeholder="29.06.2007" type="text" autocomplete="off"
+                       onkeyup="validatePropById('manufactureDate')"
+                       required>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Price:
+                <input class="form-input" id="price" placeholder="490" pattern="(^[1-9]\d*$)" type="text" autocomplete="off" required>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Color Name:
+                <input class="form-input" id="colorName" list="deviceColorList" placeholder="черный" type="text" autocomplete="off"
+                       onchange="ifColorExistLockRGB('post')" required>
+                <datalist class="device-color-list" id="deviceColorList">
+                </datalist>
+            </label>
+        </li>
+        <li class="props-item">
+            <label class="form-label">Color RGB code:
+                <input class="form-input" id="colorRGB" placeholder="0" pattern="0|(^[1-9]\d*$)" type="text" autocomplete="off" required>
+            </label>
+        </li>
+    </ul>
+
+    <button class="submit-button" onclick="sendPostForm('device')">submit</button>
+    <div id="waiting-for-answer"></div>
+    <pre class="json-message" id="response"></pre>
+</main>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../js/postQuery.js"></script>
+<script src="../../js/common.js"></script>
+</html>

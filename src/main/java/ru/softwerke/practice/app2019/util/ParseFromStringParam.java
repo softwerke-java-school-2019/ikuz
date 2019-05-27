@@ -76,7 +76,7 @@ public class ParseFromStringParam<T> extends StringParam {
         } else if(parsedValue instanceof LocalDate) {
             QueryUtils.checkIsDateBeforeNow((LocalDate) parsedValue, fieldName);
         } else if (parsedValue instanceof Number){
-            QueryUtils.checkIsPositiveNumber(valueByString, fieldName);
+            QueryUtils.checkIsPositiveNumber(this.getValue(), fieldName);
         }
     }
     

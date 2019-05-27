@@ -24,7 +24,7 @@ public class QueryConditionsHolder<T extends Entity> {
     private long offset;
     private boolean isPaginatedOutput;
     
-    QueryConditionsHolder() {
+    public QueryConditionsHolder() {
         this.queryConditions = new ConcurrentLinkedQueue<>();
         this.count = DEFAULT_COUNT;
         this.page = DEFAULT_PAGE;
@@ -32,29 +32,29 @@ public class QueryConditionsHolder<T extends Entity> {
         this.isPaginatedOutput = Boolean.TRUE;
     }
     
-    void addFilterCondition(QueryCondition<T, ?> queryCondition) {
+    public void addFilterCondition(QueryCondition<T, ?> queryCondition) {
         if (!queryConditions.contains(queryCondition)) {
             queryConditions.add(queryCondition);
         }
     }
     
-    void setCountOfElementsParam(long count) {
+    public void setCountOfElementsParam(long count) {
         this.count = count;
     }
     
-    void setPageParam(long page) {
+    public void setPageParam(long page) {
         this.page = page;
     }
     
-    void setOffsetParam(long offset) {
+    public void setOffsetParam(long offset) {
         this.offset = offset;
     }
     
-    void changeDisplayToOffsetOption() {
+    public void changeDisplayToOffsetOption() {
         this.isPaginatedOutput = false;
     }
     
-    void setQueryComparator(Comparator<T> queryComparator) {
+    public void setQueryComparator(Comparator<T> queryComparator) {
         this.queryComparator = queryComparator;
     }
     

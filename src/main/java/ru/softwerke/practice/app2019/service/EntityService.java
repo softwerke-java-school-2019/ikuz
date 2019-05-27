@@ -18,7 +18,7 @@ public interface EntityService<T extends Entity> {
      * @param entity entity
      * @return entity that has been added to storage
      * @throws WebApplicationException with response's status 400 {@code Response.Status.BAD_REQUEST}
-     *         if the entity deserialization was incorrect and the efficiency is null
+     *         if the entity's deserialization was incorrect and entity is null
      */
     T putEntity(T entity) throws WebApplicationException;
     

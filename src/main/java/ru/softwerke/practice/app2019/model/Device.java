@@ -142,14 +142,14 @@ public class Device implements Entity {
                 id == device.id &&
                 Objects.equals(modelName, device.modelName) &&
                 Objects.equals(deviceType, device.deviceType) &&
-                Objects.equals(color, device.color) &&
                 Objects.equals(manufacturer, device.manufacturer) &&
-                Objects.equals(manufacturerDate, device.manufacturerDate);
+                Objects.equals(manufacturerDate, device.manufacturerDate) &&
+                Objects.equals(color, device.color);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(modelName, deviceType, color, price, manufacturer, manufacturerDate, color, id);
+        return Objects.hash(modelName, deviceType, price, manufacturer, manufacturerDate, color, id);
     }
     
     @Override

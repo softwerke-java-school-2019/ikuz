@@ -291,4 +291,13 @@ public class DeviceQuery extends Query<Device> {
             }
         }
     }
+    
+    /**
+     * Constructor for more convenient testing device queries
+     *
+     * @param holder stores filtering, sorting and output parameters for device queries
+     */
+    public DeviceQuery(QueryConditionsHolder<Device> holder) {
+        super(holder);
+    }
 }

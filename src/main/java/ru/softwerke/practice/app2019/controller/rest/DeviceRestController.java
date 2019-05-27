@@ -21,7 +21,8 @@ public class DeviceRestController {
     private final DeviceTypeService deviceTypeService;
     
     @Inject
-    public DeviceRestController(EntityService<Device> deviceService, DeviceColorService colorService, DeviceTypeService deviceTypeService) {
+    public DeviceRestController(EntityService<Device> deviceService, DeviceColorService colorService,
+                                DeviceTypeService deviceTypeService) {
         this.deviceService = deviceService;
         this.colorService = colorService;
         this.deviceTypeService = deviceTypeService;

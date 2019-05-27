@@ -1,0 +1,165 @@
+.common {
+    margin: 0;
+    padding: 0;
+    background-color: #e5eaf0;
+    font-family: "Arial", serif;
+}
+
+.title {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.nav-menu {
+    font-size: 20px;
+    margin-left: 30px;
+    margin-top: 20px;
+}
+
+.nav-list-query {
+    list-style-type: none;
+}
+
+.nav-query {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: -10px;
+    text-decoration: none;
+}
+
+.nav-link:link {
+    text-decoration: none;
+    color: blue;
+}
+
+.nav-link:visited {
+    text-decoration: none;
+    color: darkblue;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+    color: red
+}
+
+.nav-link:active {
+    text-decoration: underline;
+    color: hotpink;
+}
+
+.form-group {
+    margin-left: 5px;
+    list-style-type: none;
+}
+
+.form-input, .form-input-get {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-width: 400px;
+}
+
+.form-label {
+    margin-left: -20px;
+    list-style-type: none;
+}
+
+.props-item {
+    margin-top: 15px;
+}
+
+.additional-left-indent {
+    margin-left: 20px;
+}
+
+.additional-right-indent {
+    margin-left: -44px;
+}
+
+.submit-button {
+    margin-left: 145px;
+    margin-top: 20px;
+    border: none;
+    outline: none;
+    width: 200px;
+    min-height: 40px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #6287bd;
+    color: #ffffff;
+    font-weight: 500;
+    opacity: 0.95;
+    cursor: pointer;
+}
+
+.submit-button:hover, .bill-item-button:hover {
+    opacity: 1;
+}
+
+.bill-item-button, .order-type-button {
+    margin-left: 20px;
+    margin-top: 20px;
+    border: none;
+    outline: none;
+    width: 200px;
+    min-height: 30px;
+    text-align: center;
+    border-radius: 5px;
+    color: #ffffff;
+    font-weight: 500;
+    opacity: 0.95;
+    cursor: pointer;
+}
+
+.bill-item-button-add, .order-type-button-add {
+    background-color: #7abd92;
+}
+
+.bill-item-button-remove, .order-type-button-remove {
+    background-color: #bd4d51;
+}
+
+.json-message {
+    margin-left: 40px;
+    margin-top: 20px;
+    display: block;
+    color: red;
+    font-size: 15px;
+}
+
+.incorrect-field, :invalid {
+    border: 2px solid red;
+    border-radius: 3px;
+}
+
+.correct-field,
+:valid:not(.submit-button):not(.bill-item-button):not(.order-type-button):not(.dateTime):not(.date):not(#birthdate):not(.customerId):not(.deviceId):not(.form-input-get):not(.order-type) {
+    border: 2px solid green;
+    border-radius: 3px;
+}
+
+.error-message {
+    color: red;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 15px;
+}
+
+@keyframes loading {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading:before {
+    display: block;
+    content: '';
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border-top: 2px solid #07d;
+    border-right: 2px solid transparent;
+    animation: loading .6s linear infinite;
+    margin: 10px 0 10px 225px;
+}

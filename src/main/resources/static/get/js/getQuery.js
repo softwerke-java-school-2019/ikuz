@@ -15,12 +15,21 @@ const billFilterOptions = ['customerId', 'purchaseDateTime', 'purchaseDateTimeFr
     'totalPriceTo', 'pageItems', 'deviceId', 'quantity', 'quantityFrom', 'quantityTo', 'price', 'priceFrom', 'priceTo'];
 const billOrderOptions = ['customerId', 'purchaseDateTime', '-purchaseDateTime', 'totalPrice', '-totalPrice'];
 
+let formSelector = document.body.querySelector('.form-select-main');
 
-function lockOtherProps(entity, isChosenId) {
+formSelector.addEventListener('change', function() {
+    if (this.value === 'Filter by Id') {
+        lockOtherProps(true)
+    } else {
+        lockOtherProps(false)
+    }
+});
+
+function lockOtherProps(isChosenId) {
     let inputForms = document.querySelectorAll('.form-input');
     let selectForms = document.querySelectorAll('.form-select');
     let buttons = document.querySelectorAll('.order-type-button');
-    let idForm = document.querySelector('#' + entity + '-id');
+    let idForm = document.querySelector('#entity-id');
     if (isChosenId) {
         for (let i = 0; i < inputForms.length; i++) {
             if (inputForms[i] !== idForm) {

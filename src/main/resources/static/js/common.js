@@ -12,23 +12,17 @@ function validatePropById(prop) {
     let selectorProp = document.querySelector('#' + prop);
     selectorProp.classList.remove('correct-field');
     selectorProp.classList.add('incorrect-field');
+    let currentDate = new Date();
+    let inputDateTimeByString = selectorProp.value;
+    let inputDateTime;
     if (selectorProp.classList.contains('date')) {
-        let currentDate = new Date();
-        let inputDateByString = selectorProp.value;
-
         let pattern = new RegExp(datePattern);
-        if (!pattern.test(inputDateByString)) {
+        if (!pattern.test(inputDateTimeByString)) {
             return
         }
-        const [day, month, year] = inputDateByString.split(".");
-        let inputDate = new Date(year, month - 1, day);
-        if (inputDate <= currentDate) {
-            selectorProp.classList.remove('incorrect-field');
-            selectorProp.classList.add('correct-field');
-        }
+        const [day, month, year] = inputDateTimeByString.split(".");
+        inputDateTime = new Date(year, month - 1, day);
     } else if (selectorProp.classList.contains('dateTime')) {
-        let currentDate = new Date();
-        let inputDateTimeByString = selectorProp.value;
         let pattern = new RegExp(timePattern);
         if (!pattern.test(inputDateTimeByString)) {
             return
@@ -36,13 +30,12 @@ function validatePropById(prop) {
         let splitDateTimeByString = inputDateTimeByString.split(" ");
         const [day, month, year] = splitDateTimeByString[0].split(".");
         const [hour, minutes, seconds] = splitDateTimeByString[1].split(":");
-        let inputDateTime = new Date(year, month - 1, day, hour, minutes, seconds);
-        if (inputDateTime <= currentDate) {
-            selectorProp.classList.remove('incorrect-field');
-            selectorProp.classList.add('correct-field');
-        }
+        inputDateTime = new Date(year, month - 1, day, hour, minutes, seconds);
     }
-
+    if (inputDateTime <= currentDate) {
+        selectorProp.classList.remove('incorrect-field');
+        selectorProp.classList.add('correct-field');
+    }
 }
 
 
@@ -73,20 +66,20 @@ function findEntityWithId(idNode, entity) {
 }
 
 function initProps(prop) {
-    let response = document.querySelector('#response');
+    let response = document.body.querySelector('#response');
     let list;
     let queryProp;
     switch (prop) {
         case 'type':
-            list = document.querySelector('.device-type-list');
+            list = document.body.querySelector('.device-type-list');
             queryProp = 'type';
             break;
         case 'color':
-            list = document.querySelector('.device-color-list');
+            list = document.body.querySelector('.device-color-list');
             queryProp = 'color';
             break;
         case 'colorRGB':
-            list = document.querySelector('.device-colorRGB-list');
+            list = document.body.querySelector('.device-colorRGB-list');
             queryProp = 'color';
             break;
     }

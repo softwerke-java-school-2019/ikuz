@@ -9,8 +9,9 @@ const billProps = ['customerId', 'items'];
 const billItemProps = ['deviceId', 'quantity', 'price'];
 
 function sendPostForm(entity) {
+    clearResponseMessage();
     if (checkValidityOfFields()) {
-        alert('Invalid data entry detected!');
+        generateErrorMessage('Invalid data entry detected!');
         return;
     }
     let responseOnQuery = document.querySelector('#response');
@@ -63,6 +64,7 @@ function sendPostForm(entity) {
 }
 
 function addBillItem(buttonNode) {
+    clearResponseMessage();
     let newBillItemNode = document.createElement('ul');
     newBillItemNode.innerHTML = `Item:
                 <li class="props-item additional-left-indent">Device's Id:
@@ -89,10 +91,11 @@ function addBillItem(buttonNode) {
 }
 
 function removeBillItem(buttonNode) {
+    clearResponseMessage();
     let billItems = buttonNode.parentNode.querySelectorAll('.bill-item');
     if (billItems.length > 1) {
         billItems[billItems.length - 1].remove();
     } else {
-        alert('At least one bill item must remain on the list!');
+        generateErrorMessage('At least one bill item must remain on the list!');
     }
 }

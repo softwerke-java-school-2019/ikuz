@@ -17,7 +17,7 @@ const billOrderOptions = ['customerId', 'purchaseDateTime', '-purchaseDateTime',
 
 let formSelector = document.body.querySelector('.form-select-main');
 
-formSelector.addEventListener('change', function() {
+formSelector.addEventListener('change', function () {
     if (this.value === 'Filter by Id') {
         lockOtherProps(true)
     } else {
@@ -109,8 +109,8 @@ function addOrderType(entity, buttonNode) {
             <br>
             <label class="title">Order Type:
                 <select class="form-select order-type" autocomplete="off">`
-                    + orderOptionsHTML +
-                `</select>
+        + orderOptionsHTML +
+        `</select>
             </label>`;
     newOrderType.classList.add('order-type-wrapper');
     buttonNode.parentNode.insertBefore(newOrderType, buttonNode);
@@ -124,8 +124,9 @@ function removeOrderType(buttonNode) {
 }
 
 function sendGetFrom(entity) {
+    clearResponseMessage();
     if (checkValidityOfFields()) {
-        alert('Invalid data entry detected!');
+        generateErrorMessage('Invalid data entry detected!');
         return;
     }
     let queryString;
@@ -135,7 +136,7 @@ function sendGetFrom(entity) {
     let waitingResponse = document.querySelector('#waiting-for-answer');
     waitingResponse.classList.add('loading');
     if (typeOfGetQuery === 'Filter by Id') {
-        queryString = entity + '/' + document.body.querySelector('#' + entity + '-id').value;
+        queryString = entity + '/' + document.body.querySelector('#entity-id').value;
     } else {
         queryString = entity + '?';
         let pageSelectNode = document.body.querySelector('.page-offset-select');

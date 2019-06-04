@@ -139,3 +139,18 @@ function checkValidityOfFields() {
     return (document.querySelectorAll(':invalid').length > 0
         || document.querySelectorAll('.incorrect-field').length > 0);
 }
+
+function generateErrorMessage(message) {
+    let buttonNode = document.querySelector('.submit-button');
+    let errorMessageNode = document.createElement('div');
+    errorMessageNode.innerHTML = message;
+    errorMessageNode.classList.add('error-message-over-button');
+    buttonNode.parentNode.insertBefore(errorMessageNode, buttonNode);
+}
+
+function clearResponseMessage() {
+    let messageNode = document.querySelector('.error-message-over-button');
+    if (messageNode !== null) {
+        messageNode.parentNode.removeChild(messageNode);
+    }
+}
